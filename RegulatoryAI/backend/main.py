@@ -1,14 +1,16 @@
+import row
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional
+from google.cloud import bigquery
 import uvicorn
 from datetime import datetime
 import json
 
 app = FastAPI(
     title="Deutsche Bank AI Governance API",
-    description="AI Governance Companion API",
+    description="Deutsche Bank AI Governance API",
     version="1.0.0"
 )
 
@@ -21,7 +23,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+client = bigquery.Client()
+DATASET_ID = "your_project.your_dataset"
+
 # ==================== Models ====================
+class DepartmentMetrics:
+    pass
+
+
+@app.get("/api/departments", response_model=Dict[str, List[DepartmentMetrics]])
+async def get_departments_bq():
+    """Get all departments with metrics"""
+    # return {"departments": db_departments}
+    """Fetch departments metrics from BigQuery"""
+    query = (f"SELECT name, compliance, risk, emissions, cost, recommandations FROM `{DATASET_ID}.departments`")
+    query_job = client.query(query)
+    results = query_job.result()
+    departments = [DepartmentMetrics(**dict(row)) for row in results]
+    return {"departments": departments}
+
 class RiskMetric(BaseModel):
     category: str
     percentage: int
@@ -38,10 +58,25 @@ class RegulationSummary(BaseModel):
 class DepartmentMetrics(BaseModel):
     name: str
     compliance: int
-    risk_score: str
+    risk: str
     emissions: float
     cost: str
     recommendation: str
+
+class RiskMetricsResponse(BaseModel):
+    overall_risk: int
+    risk_level: str
+    categories: List[RiskMetric]
+
+class GovernanceScore(BaseModel):
+    score: int
+    status: str
+    trend: str
+    components: Dict[str, int]
+
+class RegulationDetail(BaseModel):
+    regulation: RegulationSummary
+    affected_departments: int
 
 class ChatMessage(BaseModel):
     message: str
@@ -107,6 +142,11 @@ db_departments = [
     },
 ]
 
+# BigQuery Configuration
+# Note: Requires GOOGLE_APPLICATION_CREDENTIALS environment variable
+client = bigquery.Client()
+DATASET_ID = "your_project.your_dataset"
+
 # ==================== Endpoints ====================
 
 @app.get("/")
@@ -132,7 +172,7 @@ async def health_check():
 
 # ==================== Governance Endpoints ====================
 
-@app.get("/api/governance/score")
+@app.get("/api/governance/score", response_model=GovernanceScore)
 async def get_governance_score():
     """Get overall AI governance score"""
     return {
@@ -146,7 +186,7 @@ async def get_governance_score():
         }
     }
 
-@app.get("/api/governance/risk-metrics")
+@app.get("/api/governance/risk-metrics", response_model=RiskMetricsResponse)
 async def get_risk_metrics():
     """Get enterprise risk metrics"""
     return {
@@ -162,12 +202,12 @@ async def get_risk_metrics():
         ]
     }
 
-@app.get("/api/regulations")
+@app.get("/api/regulations", response_model=Dict[str, List[RegulationSummary]])
 async def get_regulations():
     """Get all regulations"""
     return {"regulations": db_regulations}
 
-@app.get("/api/regulations/{regulation_id}")
+@app.get("/api/regulations/{regulation_id}", response_model=RegulationDetail)
 async def get_regulation(regulation_id: str):
     """Get specific regulation details"""
     for reg in db_regulations:
@@ -175,12 +215,12 @@ async def get_regulation(regulation_id: str):
             return {"regulation": reg, "affected_departments": 3}
     raise HTTPException(status_code=404, detail="Regulation not found")
 
-@app.get("/api/departments")
+@app.get("/api/departments", response_model=Dict[str, List[DepartmentMetrics]])
 async def get_departments():
     """Get all departments with metrics"""
     return {"departments": db_departments}
 
-@app.get("/api/departments/{dept_id}")
+@app.get("/api/departments/{dept_id}", response_model=Dict[str, DepartmentMetrics])
 async def get_department(dept_id: str):
     """Get specific department details"""
     for dept in db_departments:
@@ -232,7 +272,7 @@ async def get_cost_roi():
         ]
     }
 
-@app.post("/api/chat")
+@app.post("/api/chat", response_model=ChatResponse)
 async def chat(message: ChatMessage):
     """AI Governance Assistant chatbot"""
     msg_lower = message.message.lower()

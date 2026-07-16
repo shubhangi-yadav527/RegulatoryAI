@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 
 # Frontend
 echo -e "${BLUE}🚀 Starting Frontend...${NC}"
-cd db-ai-governance
+cd RegulatoryAI
 npm install > /dev/null 2>&1
 echo -e "${GREEN}✅ Frontend dependencies installed${NC}"
 npm start &

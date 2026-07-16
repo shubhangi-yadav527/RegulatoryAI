@@ -9,6 +9,9 @@ import { KPICard, CircularGaugeCard, SemiCircularGaugeCard } from '../components
 import BuildIcon from '@mui/icons-material/Build';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import FolderIcon from '@mui/icons-material/Folder';
+import GavelIcon from '@mui/icons-material/Gavel'; // For Compliance Score
+import WarningIcon from '@mui/icons-material/Warning'; // For Policy Violations
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'; // For Regulatory Changes
 
 export default function HomeDashboard() {
   const theme = useTheme();
@@ -48,7 +51,7 @@ export default function HomeDashboard() {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid container spacing={3}>
         {/* KPI Cards Row 1 */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <CircularGaugeCard
             title="AI Governance Score"
             value={97}
@@ -56,14 +59,14 @@ export default function HomeDashboard() {
             icon={SmartToyIcon}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <SemiCircularGaugeCard
             title="Enterprise Risk Gauge"
             value={72}
             status="medium"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <KPICard
             title="Active Regulations"
             value={18}
@@ -72,7 +75,9 @@ export default function HomeDashboard() {
             icon={BuildIcon}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+
+        {/* Row 2 */}
+        <Grid item xs={12} sm={6} md={4}>
           <KPICard
             title="High Priority Alerts"
             value={4}
@@ -81,9 +86,7 @@ export default function HomeDashboard() {
             trend="↑ 2 this week"
           />
         </Grid>
-
-        {/* Second Row */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <Card sx={{ p: 2.5, height: '100%' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
                   <FolderIcon sx={{ fontSize: '2rem', color: 'success.main' }} />
@@ -99,7 +102,7 @@ export default function HomeDashboard() {
             <Chip label="↓ 40% reduction" size="small" color="success" variant="outlined" />
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={4}>
           <Card sx={{ p: 2.5, height: '100%' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1, fontWeight: 500 }}>
               AI Confidence
@@ -124,85 +127,38 @@ export default function HomeDashboard() {
           </Card>
         </Grid>
 
-        {/* Chatbot Section */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <SmartToyIcon sx={{ color: 'primary.main' }} />
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                AI Governance Assistant
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                flex: 1,
-                bgcolor: '#F9FAFB',
-                borderRadius: 1,
-                p: 2,
-                mb: 2,
-                maxHeight: '300px',
-                overflowY: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}
-            >
-              {chat.map((msg, idx) => (
-                <Box key={idx} sx={{ display: 'flex', justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start' }}>
-                  <Paper
-                    sx={{
-                      p: 1.5,
-                      maxWidth: '75%',
-                      bgcolor: msg.type === 'user' ? 'primary.main' : 'white',
-                      color: msg.type === 'user' ? 'white' : 'text.primary',
-                      borderRadius: 2,
-                    }}
-                  >
-                    <Typography variant="body2">{msg.text}</Typography>
-                    {msg.metadata && (
-                      <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {msg.metadata.actions.map((action, i) => (
-                          <Chip
-                            key={i}
-                            label={action}
-                            size="small"
-                            variant="outlined"
-                            sx={{
-                              fontSize: '0.7rem',
-                              color: msg.type === 'user' ? 'white' : 'primary.main',
-                              borderColor: msg.type === 'user' ? 'white' : 'primary.main',
-                            }}
-                          />
-                        ))}
-                      </Box>
-                    )}
-                  </Paper>
-                </Box>
-              ))}
-            </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="Ask about regulations, risks, or recommendations..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-              />
-              <Button
-                variant="contained"
-                onClick={handleSendMessage}
-                sx={{ borderRadius: 2, minWidth: '44px', p: 1 }}
-              >
-                <SendIcon />
-              </Button>
-            </Box>
-          </Card>
+        {/* Row 3 - New Widgets */}
+        <Grid item xs={12} sm={6} md={4}>
+          <CircularGaugeCard
+            title="Compliance Score"
+            value={88}
+            color="info"
+            icon={GavelIcon}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <KPICard
+            title="Policy Violations"
+            value={7}
+            unit="violations"
+            color="warning"
+            trend="↑ 1 this month"
+            icon={WarningIcon}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <KPICard
+            title="Regulatory Changes"
+            value={12}
+            unit="changes"
+            color="secondary"
+            trend="↑ 3 new"
+            icon={ChangeCircleIcon}
+          />
         </Grid>
 
-        {/* Quick Stats */}
-        <Grid item xs={12} md={6}>
+        {/* Quick Stats - Now takes full width */}
+        <Grid item xs={12} md={12}>
           <Card sx={{ p: 3 }}>
             <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
               System Health
@@ -224,6 +180,88 @@ export default function HomeDashboard() {
                   />
                 </Box>
               ))}
+            </Box>
+          </Card>
+        </Grid>
+
+        {/* Chatbot Section */}
+        <Grid item xs={12} md={6} sx={{ position: 'fixed', bottom: theme.spacing(3), right: theme.spacing(3), zIndex: 1300 }}>
+          <Card sx={{ p: 2, width: 300, height: 400, display: 'flex', flexDirection: 'column', boxShadow: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <SmartToyIcon sx={{ color: 'primary.main', fontSize: '1.2rem' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
+                AI Governance Assistant
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                flex: 1,
+                bgcolor: '#F9FAFB',
+                borderRadius: 1,
+                p: 1.5,
+                mb: 1.5,
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1.5,
+              }}
+            >
+              {chat.map((msg, idx) => (
+                <Box key={idx} sx={{ display: 'flex', justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start' }}>
+                  <Paper
+                    sx={{
+                      p: 1,
+                      maxWidth: '85%',
+                      bgcolor: msg.type === 'user' ? 'primary.main' : 'white',
+                      color: msg.type === 'user' ? 'white' : 'text.primary',
+                      borderRadius: 1.5,
+                      fontSize: '0.8rem',
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>{msg.text}</Typography>
+                    {msg.metadata && (
+                      <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {msg.metadata.actions.map((action, i) => (
+                          <Chip
+                            key={i}
+                            label={action}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              fontSize: '0.6rem',
+                              height: 'auto',
+                              '& .MuiChip-label': {
+                                py: '2px',
+                              },
+                              color: msg.type === 'user' ? 'white' : 'primary.main',
+                              borderColor: msg.type === 'user' ? 'white' : 'primary.main',
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    )}
+                  </Paper>
+                </Box>
+              ))}
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Ask..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5 }, fontSize: '0.8rem' }}
+                inputProps={{ style: { fontSize: '0.8rem', padding: '8px 12px' } }}
+              />
+              <Button
+                variant="contained"
+                onClick={handleSendMessage}
+                sx={{ borderRadius: 1.5, minWidth: '36px', p: 0.8 }}
+              >
+                <SendIcon sx={{ fontSize: '1.2rem' }} />
+              </Button>
             </Box>
           </Card>
         </Grid>
