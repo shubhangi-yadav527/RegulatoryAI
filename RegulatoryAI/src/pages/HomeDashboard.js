@@ -48,7 +48,7 @@ export default function HomeDashboard() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, background: 'transparent', color: '#E0E0E0' }}>
       <Grid container spacing={3}>
         {/* KPI Cards Row 1 */}
         <Grid item xs={12} sm={6} md={4}>
@@ -159,7 +159,7 @@ export default function HomeDashboard() {
 
         {/* Quick Stats - Now takes full width */}
         <Grid item xs={12} md={12}>
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0' }}>
             <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
               System Health
             </Typography>
@@ -186,7 +186,7 @@ export default function HomeDashboard() {
 
         {/* Chatbot Section */}
         <Grid item xs={12} md={6} sx={{ position: 'fixed', bottom: theme.spacing(3), right: theme.spacing(3), zIndex: 1300 }}>
-          <Card sx={{ p: 2, width: 300, height: 400, display: 'flex', flexDirection: 'column', boxShadow: 3 }}>
+          <Card sx={{ p: 2, width: 300, height: 400, display: 'flex', flexDirection: 'column', boxShadow: 3, background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.divider}` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
               <SmartToyIcon sx={{ color: 'primary.main', fontSize: '1.2rem' }} />
               <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
@@ -196,7 +196,7 @@ export default function HomeDashboard() {
             <Box
               sx={{
                 flex: 1,
-                bgcolor: '#F9FAFB',
+                bgcolor: theme.palette.background.paper,
                 borderRadius: 1,
                 p: 1.5,
                 mb: 1.5,
@@ -212,7 +212,7 @@ export default function HomeDashboard() {
                     sx={{
                       p: 1,
                       maxWidth: '85%',
-                      bgcolor: msg.type === 'user' ? 'primary.main' : 'white',
+                      bgcolor: msg.type === 'user' ? 'primary.main' : theme.palette.background.paper,
                       color: msg.type === 'user' ? 'white' : 'text.primary',
                       borderRadius: 1.5,
                       fontSize: '0.8rem',
