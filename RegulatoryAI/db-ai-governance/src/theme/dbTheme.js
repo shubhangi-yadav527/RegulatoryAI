@@ -4,73 +4,92 @@ export const dbTheme = createTheme({
   palette: {
     primary: {
       main: '#0018A8', // Deutsche Bank deep blue
-      light: '#4A4FD8', // Keeping existing light/dark as no specific new ones provided
+      light: '#4A4FD8',
       dark: '#000D5C',
     },
     secondary: {
-      main: '#00A89D', // Carbon Impact card Teal/Green
+      main: '#00A8A8', // Teal
       light: '#40D0D0',
       dark: '#006B6B',
     },
     success: {
-      main: '#2E8B57', // AI Governance Score card Green
+      main: '#2DD4BF', // Green for compliance
       light: '#5CE5DB',
       dark: '#1B9D8C',
     },
     warning: {
-      main: '#F0C800', // Enterprise Risk card Yellow-Gold
+      main: '#FBBF24', // Amber for medium risk
       light: '#FCDA6D',
       dark: '#D89D1B',
     },
     error: {
-      main: '#D32F2F', // High Priority Alerts card Red
+      main: '#EF4444', // Red for high risk
       light: '#F87171',
       dark: '#B91C1C',
     },
     background: {
-      default: '#F0F0F0', // Light grey background
-      paper: 'rgba(255, 255, 255, 0.85)', // White with ~85% opacity for frosted glass effect
+      default: '#F9FAFB', // Light grey background
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#1A1A2E', // Dark charcoal for header/body text
-      secondary: '#B0B0C0', // Light grey for subtitle text
+      primary: '#1F2937',
+      secondary: '#6B7280',
     },
   },
   typography: {
-    fontFamily: '"Segoe UI", "Helvetica Neue", sans-serif',
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     h1: {
-      fontSize: '2.5rem',
+      fontSize: '2.25rem',
       fontWeight: 700,
-      letterSpacing: '-0.02em',
+      letterSpacing: '-0.022em',
+      lineHeight: 1.2,
     },
     h2: {
-      fontSize: '2rem',
+      fontSize: '1.75rem',
       fontWeight: 700,
-      letterSpacing: '-0.01em',
+      letterSpacing: '-0.021em',
+      lineHeight: 1.25,
     },
     h3: {
-      fontSize: '1.5rem',
+      fontSize: '1.375rem',
       fontWeight: 600,
+      letterSpacing: '-0.018em',
+      lineHeight: 1.3,
     },
     h4: {
-      fontSize: '1.25rem',
-      fontWeight: 600,
-    },
-    h5: {
       fontSize: '1.125rem',
       fontWeight: 600,
+      letterSpacing: '-0.015em',
+      lineHeight: 1.35,
+    },
+    h5: {
+      fontSize: '0.95rem',
+      fontWeight: 600,
+      letterSpacing: '-0.012em',
+      lineHeight: 1.4,
     },
     body1: {
-      fontSize: '1rem',
+      fontSize: '0.9rem',
       fontWeight: 400,
+      letterSpacing: '-0.011em',
+      lineHeight: 1.45,
     },
     body2: {
-      fontSize: '0.875rem',
+      fontSize: '0.8rem',
       fontWeight: 400,
+      letterSpacing: '-0.011em',
+      lineHeight: 1.5,
+    },
+    caption: {
+      fontSize: '0.72rem',
+      fontWeight: 500,
+      letterSpacing: '-0.008em',
+      lineHeight: 1.5,
     },
     button: {
       textTransform: 'none',
       fontWeight: 600,
+      letterSpacing: '-0.01em',
     },
   },
   shape: {
@@ -104,12 +123,16 @@ export const dbTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: '#F5F5FA', // Soft White/Light Grey for card background
-          borderRadius: 12,
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)', // Keeping existing shadow, as no new one provided
-          transition: 'all 0.2s ease-in-out',
+          borderRadius: 16,
+          background: 'rgba(255, 255, 255, 0.65)',
+          backdropFilter: 'blur(15px)',
+          WebkitBackdropFilter: 'blur(15px)',
+          border: '1px solid rgba(255, 255, 255, 0.5)',
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.04)',
+          transition: 'all 0.25s ease-in-out',
           '&:hover': {
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
+            transform: 'translateY(-4px)',
+            boxShadow: '0 12px 40px 0 rgba(31, 38, 135, 0.08)',
           },
         },
       },
@@ -118,15 +141,12 @@ export const dbTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          backgroundColor: 'rgba(255, 255, 255, 0.85)', // Frosted glass effect
-          backdropFilter: 'blur(10px)', // Glassmorphism blur effect
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#1A1A2E', // Dark Navy for panel header/sidebar background
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
         },
       },

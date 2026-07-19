@@ -1,271 +1,239 @@
-import React, { useState } from 'react';
-import {
-  Box, Container, Grid, Card, Typography, TextField, Button, Chip,
-  Avatar, Paper, useTheme
-} from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
-import { KPICard, CircularGaugeCard, SemiCircularGaugeCard } from '../components/KPICards';
-import BuildIcon from '@mui/icons-material/Build';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import FolderIcon from '@mui/icons-material/Folder';
-import GavelIcon from '@mui/icons-material/Gavel'; // For Compliance Score
-import WarningIcon from '@mui/icons-material/Warning'; // For Policy Violations
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'; // For Regulatory Changes
+import React from 'react';
+import { Box, Typography, IconButton, Avatar, Badge, Grid, Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import HomeIcon from '@mui/icons-material/Home';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import DescriptionIcon from '@mui/icons-material/Description';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import ChatbotIcon from '@mui/icons-material/SmartToy'; // Using SmartToy for chatbot
+
+// Styled components for Glassmorphism
+const GlassmorphicContainer = styled(Box)(({ theme }) => ({
+  background: 'rgba(255, 255, 255, 0.25)',
+  backdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255, 255, 255, 0.4)',
+  borderRadius: '24px',
+  display: 'flex',
+  flexDirection: 'column',
+  height: '90vh', // Adjust as needed
+  width: '95vw', // Adjust as needed
+  margin: 'auto',
+  overflow: 'hidden',
+}));
+
+const Sidebar = styled(Box)(({ theme }) => ({
+  width: '80px',
+  backgroundColor: 'rgba(26, 26, 46, 0.8)', // Dark Navy from theme
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  paddingTop: theme.spacing(3),
+  gap: theme.spacing(3),
+}));
+
+const SidebarButton = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  '&:hover': {
+    color: theme.palette.primary.light,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  '&.active': {
+    color: theme.palette.primary.main,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+}));
+
+const Header = styled(Box)(({ theme }) => ({
+  backgroundColor: 'rgba(26, 26, 46, 0.6)', // Dark Navy from theme, slightly transparent
+  padding: theme.spacing(1, 3),
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  color: theme.palette.common.white,
+  borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+}));
+
+const MainContent = styled(Box)({
+  flexGrow: 1,
+  padding: '20px',
+  overflowY: 'auto',
+});
+
+const KPICard = styled(Paper)(({ theme }) => ({
+  backgroundColor: 'rgba(255, 255, 255, 0.7)', // Semi-transparent white for cards
+  backdropFilter: 'blur(10px)',
+  borderRadius: '16px',
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: '0 8px 12px rgba(0, 0, 0, 0.15)',
+  },
+}));
+
+const ChatbotWidget = styled(Box)(({ theme }) => ({
+  position: 'fixed',
+  bottom: theme.spacing(4),
+  right: theme.spacing(4),
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  backdropFilter: 'blur(10px)',
+  borderRadius: '30px',
+  padding: theme.spacing(1, 2),
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  cursor: 'pointer',
+  zIndex: 1000,
+}));
 
 export default function HomeDashboard() {
-  const theme = useTheme();
-  const [message, setMessage] = useState('');
-  const [chat, setChat] = useState([
-    {
-      type: 'bot',
-      text: 'Which regulation has the highest impact?',
-      isQuestion: true,
-    },
-    {
-      type: 'bot',
-      text: 'The EU AI Act has the highest impact on your organization. It affects 3 departments with estimated implementation cost of €2.1M.',
-      metadata: {
-        regulation: 'EU AI Act',
-        departments: ['Risk Management', 'Compliance', 'AI Ethics'],
-        cost: '€2.1M',
-        actions: ['High Priority', 'Q3 2024 Deadline', 'Review Risk Assessment'],
-      },
-    },
-  ]);
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      setChat([...chat, { type: 'user', text: message }]);
-      setMessage('');
-      setTimeout(() => {
-        setChat((prev) => [...prev, {
-          type: 'bot',
-          text: 'Processing your query with AI governance engine...',
-        }]);
-      }, 500);
-    }
-  };
-
   return (
-    <Container maxWidth="lg" sx={{ py: 4, background: 'transparent', color: '#E0E0E0' }}>
-      <Grid container spacing={3}>
-        {/* KPI Cards Row 1 */}
-        <Grid item xs={12} sm={6} md={4}>
-          <CircularGaugeCard
-            title="AI Governance Score"
-            value={97}
-            color="success"
-            icon={SmartToyIcon}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <SemiCircularGaugeCard
-            title="Enterprise Risk Gauge"
-            value={72}
-            status="medium"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <KPICard
-            title="Active Regulations"
-            value={18}
-            unit="regulations"
-            color="primary"
-            icon={BuildIcon}
-          />
-        </Grid>
+    <Box sx={{
+      // Removed minHeight: '100vh' from here
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%', // Ensure it takes full width of its parent
+      height: '100%', // Ensure it takes full height of its parent
+    }}>
+      <GlassmorphicContainer>
+        {/* Sidebar */}
+        <Sidebar>
+          <SidebarButton className="active">
+            <HomeIcon />
+          </SidebarButton>
+          <SidebarButton>
+            <DashboardIcon />
+          </SidebarButton>
+          <SidebarButton>
+            <DescriptionIcon />
+          </SidebarButton>
+          <SidebarButton>
+            <AssignmentIcon />
+          </SidebarButton>
+          <SidebarButton>
+            <SettingsIcon />
+          </SidebarButton>
+          <Box sx={{ flexGrow: 1 }} /> {/* Spacer */}
+          <SidebarButton>
+            <ExitToAppIcon />
+          </SidebarButton>
+        </Sidebar>
 
-        {/* Row 2 */}
-        <Grid item xs={12} sm={6} md={4}>
-          <KPICard
-            title="High Priority Alerts"
-            value={4}
-            unit="alerts"
-            color="error"
-            trend="↑ 2 this week"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ p: 2.5, height: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                  <FolderIcon sx={{ fontSize: '2rem', color: 'success.main' }} />
+        {/* Main Content Area */}
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          {/* Header */}
+          <Header>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {/* Deutsche Bank Logo/Icon Placeholder */}
+              <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>DB</Typography>
               <Box>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-                  Carbon Impact
-                </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                  31 Tons CO₂
-                </Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600, lineHeight: 1.2 }}>RegNet</Typography>
+                <Typography variant="body2" sx={{ opacity: 0.8 }}>European Regulatory AI</Typography>
               </Box>
             </Box>
-            <Chip label="↓ 40% reduction" size="small" color="success" variant="outlined" />
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ p: 2.5, height: '100%' }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1, fontWeight: 500 }}>
-              AI Confidence
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
-              {[85, 78, 92, 88, 95].map((val, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    width: '12px',
-                    height: `${val}%`,
-                    bgcolor: 'primary.main',
-                    borderRadius: 1,
-                    minHeight: '20px',
-                  }}
-                />
-              ))}
+            <Box>
+              <IconButton color="inherit">
+                <SettingsIcon />
+              </IconButton>
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton color="inherit">
+                <Avatar alt="User" src="/static/images/avatar/1.jpg" sx={{ width: 30, height: 30 }} />
+              </IconButton>
             </Box>
-            <Typography variant="caption" sx={{ color: 'success.main', mt: 1, display: 'block', fontWeight: 600 }}>
-              ✓ Stable
-            </Typography>
-          </Card>
-        </Grid>
+          </Header>
 
-        {/* Row 3 - New Widgets */}
-        <Grid item xs={12} sm={6} md={4}>
-          <CircularGaugeCard
-            title="Compliance Score"
-            value={88}
-            color="info"
-            icon={GavelIcon}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <KPICard
-            title="Policy Violations"
-            value={7}
-            unit="violations"
-            color="warning"
-            trend="↑ 1 this month"
-            icon={WarningIcon}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <KPICard
-            title="Regulatory Changes"
-            value={12}
-            unit="changes"
-            color="secondary"
-            trend="↑ 3 new"
-            icon={ChangeCircleIcon}
-          />
-        </Grid>
+          {/* KPI Cards Grid */}
+          <MainContent>
+            <Grid container spacing={3}>
+              {/* Row 1: 4 Cards */}
+              <Grid item xs={12} sm={6} md={3}>
+                <KPICard>
+                  <Typography variant="h4" color="primary">97%</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">AI Governance Score</Typography>
+                  {/* Progress bar placeholder */}
+                  <Box sx={{ height: 5, bgcolor: 'grey.300', borderRadius: 5, mt: 1 }}>
+                    <Box sx={{ width: '97%', height: '100%', bgcolor: 'secondary.main', borderRadius: 5 }} />
+                  </Box>
+                </KPICard>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <KPICard>
+                  <Typography variant="h4" color="success">AI Altitude</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">Confidence</Typography>
+                  {/* Checkmark icon placeholder */}
+                  <Box sx={{ mt: 1 }}><Typography variant="h3">✅</Typography></Box>
+                </KPICard>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <KPICard>
+                  <Typography variant="h4" color="warning">72%</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">Enterprise Risk</Typography>
+                  {/* Speedometer gauge placeholder */}
+                  <Box sx={{ mt: 1 }}><Typography variant="h3">📊</Typography></Box>
+                </KPICard>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <KPICard>
+                  <Typography variant="h4" color="error">18</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">Active Regulations</Typography>
+                  {/* Bar chart placeholder */}
+                  <Box sx={{ mt: 1 }}><Typography variant="h3">📈</Typography></Box>
+                </KPICard>
+              </Grid>
 
-        {/* Quick Stats - Now takes full width */}
-        <Grid item xs={12} md={12}>
-          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0' }}>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-              System Health
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {[
-                { label: 'API Response Time', value: '124ms', status: 'good' },
-                { label: 'Data Sync Status', value: 'Real-time', status: 'good' },
-                { label: 'Model Accuracy', value: '94.2%', status: 'good' },
-                { label: 'System Uptime', value: '99.98%', status: 'good' },
-              ].map((stat, i) => (
-                <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="body2">{stat.label}</Typography>
-                  <Chip
-                    label={stat.value}
-                    size="small"
-                    color={stat.status === 'good' ? 'success' : 'warning'}
-                    variant="filled"
-                  />
-                </Box>
-              ))}
-            </Box>
-          </Card>
-        </Grid>
+              {/* Row 2: 3 Cards */}
+              <Grid item xs={12} sm={6} md={4}>
+                <KPICard>
+                  <Typography variant="h4" color="primary">9</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">Recognal Changes</Typography>
+                  {/* Icon placeholder */}
+                  <Box sx={{ mt: 1 }}><Typography variant="h3">🔄</Typography></Box>
+                </KPICard>
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <KPICard>
+                  <Typography variant="h4" color="success">0</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">Riexictind Security</Typography>
+                  {/* Icon placeholder */}
+                  <Box sx={{ mt: 1 }}><Typography variant="h3">🔒</Typography></Box>
+                </KPICard>
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <KPICard>
+                  <Typography variant="h4" color="error">4</Typography>
+                  <Typography variant="subtitle2" color="text.secondary">High Priority Alerts</Typography>
+                  {/* Warning triangle placeholder */}
+                  <Box sx={{ mt: 1 }}><Typography variant="h3">⚠️</Typography></Box>
+                </KPICard>
+              </Grid>
+            </Grid>
+          </MainContent>
+        </Box>
+      </GlassmorphicContainer>
 
-        {/* Chatbot Section */}
-        <Grid item xs={12} md={6} sx={{ position: 'fixed', bottom: theme.spacing(3), right: theme.spacing(3), zIndex: 1300 }}>
-          <Card sx={{ p: 2, width: 300, height: 400, display: 'flex', flexDirection: 'column', boxShadow: 3, background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.divider}` }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <SmartToyIcon sx={{ color: 'primary.main', fontSize: '1.2rem' }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem' }}>
-                AI Governance Assistant
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                flex: 1,
-                bgcolor: theme.palette.background.paper,
-                borderRadius: 1,
-                p: 1.5,
-                mb: 1.5,
-                overflowY: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1.5,
-              }}
-            >
-              {chat.map((msg, idx) => (
-                <Box key={idx} sx={{ display: 'flex', justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start' }}>
-                  <Paper
-                    sx={{
-                      p: 1,
-                      maxWidth: '85%',
-                      bgcolor: msg.type === 'user' ? 'primary.main' : theme.palette.background.paper,
-                      color: msg.type === 'user' ? 'white' : 'text.primary',
-                      borderRadius: 1.5,
-                      fontSize: '0.8rem',
-                    }}
-                  >
-                    <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>{msg.text}</Typography>
-                    {msg.metadata && (
-                      <Box sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {msg.metadata.actions.map((action, i) => (
-                          <Chip
-                            key={i}
-                            label={action}
-                            size="small"
-                            variant="outlined"
-                            sx={{
-                              fontSize: '0.6rem',
-                              height: 'auto',
-                              '& .MuiChip-label': {
-                                py: '2px',
-                              },
-                              color: msg.type === 'user' ? 'white' : 'primary.main',
-                              borderColor: msg.type === 'user' ? 'white' : 'primary.main',
-                            }}
-                          />
-                        ))}
-                      </Box>
-                    )}
-                  </Paper>
-                </Box>
-              ))}
-            </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="Ask..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5 }, fontSize: '0.8rem' }}
-                inputProps={{ style: { fontSize: '0.8rem', padding: '8px 12px' } }}
-              />
-              <Button
-                variant="contained"
-                onClick={handleSendMessage}
-                sx={{ borderRadius: 1.5, minWidth: '36px', p: 0.8 }}
-              >
-                <SendIcon sx={{ fontSize: '1.2rem' }} />
-              </Button>
-            </Box>
-          </Card>
-        </Grid>
-      </Grid>
-    </Container>
+      {/* Floating Chatbot */}
+      <ChatbotWidget>
+        <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40, mr: 1 }}>
+          <ChatbotIcon sx={{ color: 'white' }} />
+        </Avatar>
+        <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500 }}>
+          Hello, I'm ZehnBot. How can I assist you?
+        </Typography>
+      </ChatbotWidget>
+    </Box>
   );
 }

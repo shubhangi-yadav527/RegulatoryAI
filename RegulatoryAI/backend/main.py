@@ -1,9 +1,10 @@
-import row
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from google.cloud import bigquery
+from google.oauth2 import service_account
 import uvicorn
 from datetime import datetime
 import json
@@ -23,12 +24,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = bigquery.Client()
+# Initialize BigQuery client with service account
+sa_json_path = r'C:\Users\Shubhangi Yadav\PycharmProjects\tensile-oarlock-500904-d4-1d6cbf5e0d4c.json'
+try:
+    if os.path.exists(sa_json_path):
+        creds = service_account.Credentials.from_service_account_file(sa_json_path)
+        client = bigquery.Client(credentials=creds)
+    else:
+        client = bigquery.Client()
+except Exception as e:
+    print(f"Warning: Could not initialize BigQuery client: {e}")
+    client = None
 DATASET_ID = "your_project.your_dataset"
 
 # ==================== Models ====================
-class DepartmentMetrics:
-    pass
+class DepartmentMetrics(BaseModel):
+    name: str
+    compliance: int
+    risk: str
+    emissions: float
+    cost: str
+    recommendations: str = ""
 
 
 @app.get("/api/departments", response_model=Dict[str, List[DepartmentMetrics]])
@@ -142,9 +158,7 @@ db_departments = [
     },
 ]
 
-# BigQuery Configuration
-# Note: Requires GOOGLE_APPLICATION_CREDENTIALS environment variable
-client = bigquery.Client()
+# BigQuery Configuration already initialized above (line ~34)
 DATASET_ID = "your_project.your_dataset"
 
 # ==================== Endpoints ====================
