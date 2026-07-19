@@ -56,7 +56,7 @@ export default function CostROIDashboard() {
       <Grid container spacing={3}>
         {/* Key Metrics */}
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'error.50' }}>
+          <Card sx={{ p: 3, textAlign: 'center', background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.error.main}22` }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
               Current Annual Cost
             </Typography>
@@ -69,7 +69,7 @@ export default function CostROIDashboard() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'warning.50' }}>
+          <Card sx={{ p: 3, textAlign: 'center', background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.warning.main}22` }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
               AI Optimized Cost
             </Typography>
@@ -82,7 +82,7 @@ export default function CostROIDashboard() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'success.50' }}>
+          <Card sx={{ p: 3, textAlign: 'center', background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.success.main}22` }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
               Annual Savings
             </Typography>
@@ -95,7 +95,7 @@ export default function CostROIDashboard() {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'primary.50' }}>
+          <Card sx={{ p: 3, textAlign: 'center', background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.primary.main}22` }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
               Payback Period
             </Typography>

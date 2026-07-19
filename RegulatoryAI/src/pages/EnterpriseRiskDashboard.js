@@ -28,7 +28,7 @@ export default function EnterpriseRiskDashboard() {
       <Grid container spacing={3}>
         {/* Central Risk Gauge */}
         <Grid item xs={12} md={4}>
-          <Card sx={{ p: 4, textAlign: 'center', height: '100%' }}>
+          <Card sx={{ p: 4, textAlign: 'center', height: '100%', background: theme.palette.background.paper, color: '#E0E0E0' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, fontWeight: 500 }}>
               Overall Risk Level
             </Typography>
@@ -81,7 +81,7 @@ export default function EnterpriseRiskDashboard() {
 
         {/* Risk Categories */}
         <Grid item xs={12} md={8}>
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0' }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
               Risk Category Breakdown
             </Typography>
@@ -125,7 +125,7 @@ export default function EnterpriseRiskDashboard() {
                   color: 'success',
                 },
               ].map((item, i) => (
-                <Card key={i} sx={{ p: 2, bgcolor: `${theme.palette[item.color].main}10` }}>
+              <Card key={i} sx={{ p: 2, background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette[item.color].main}22` }}>
                   <Typography
                     variant="h6"
                     sx={{
@@ -150,7 +150,7 @@ export default function EnterpriseRiskDashboard() {
 
         {/* Trend Analysis */}
         <Grid item xs={12}>
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0' }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
               Trend Analysis (Last 90 Days)
             </Typography>

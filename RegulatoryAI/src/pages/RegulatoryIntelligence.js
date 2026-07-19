@@ -78,7 +78,7 @@ export default function RegulatoryIntelligence() {
 
         {/* Timeline */}
         <Grid item xs={12} md={7}>
-          <Card sx={{ p: 4 }}>
+          <Card sx={{ p: 4, background: theme.palette.background.paper, color: '#E0E0E0' }}>
             <Timeline position="alternate">
               {regulations.map((reg, idx) => (
                 <TimelineItem key={idx}>
@@ -101,7 +101,8 @@ export default function RegulatoryIntelligence() {
                     <Card
                       sx={{
                         p: 2,
-                        backgroundColor: '#F9FAFB',
+                        background: theme.palette.background.paper,
+                        color: '#E0E0E0',
                         border: `1px solid ${getSeverityColor(reg.severity)}22`,
                       }}
                     >
@@ -157,7 +158,7 @@ export default function RegulatoryIntelligence() {
         <Grid item xs={12} md={5}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {regulations.slice(0, 2).map((reg, idx) => (
-              <Card key={idx} sx={{ p: 2.5 }}>
+              <Card key={idx} sx={{ p: 2.5, background: theme.palette.background.paper, color: '#E0E0E0' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     {reg.name}
@@ -192,7 +193,7 @@ export default function RegulatoryIntelligence() {
               </Card>
             ))}
 
-            <Card sx={{ p: 2.5, bgcolor: 'primary.50' }}>
+            <Card sx={{ p: 2.5, background: theme.palette.background.paper, color: '#E0E0E0' }}>
               <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main', mb: 1 }}>
                 📊 Compliance Score
               </Typography>

@@ -61,7 +61,7 @@ export default function DepartmentImpact() {
       <Grid container spacing={3}>
         {departments.map((dept, idx) => (
           <Grid item xs={12} md={4} key={idx}>
-            <Card sx={{ p: 3, height: '100%' }}>
+            <Card sx={{ p: 3, height: '100%', background: theme.palette.background.paper, color: '#E0E0E0' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   {dept.name}
@@ -97,7 +97,7 @@ export default function DepartmentImpact() {
                   sx={{
                     height: 8,
                     borderRadius: 4,
-                    backgroundColor: '#E5E7EB',
+                    backgroundColor: theme.palette.divider,
                     '& .MuiLinearProgress-bar': {
                       backgroundColor: dept.compliance > 90 ? theme.palette.success.main : theme.palette.warning.main,
                       borderRadius: 4,
@@ -135,7 +135,7 @@ export default function DepartmentImpact() {
               </Box>
 
               {/* Estimated Cost */}
-              <Box sx={{ mb: 3, pb: 3, borderBottom: `1px solid #E5E7EB` }}>
+              <Box sx={{ mb: 3, pb: 3, borderBottom: `1px solid ${theme.palette.divider}` }}>
                 <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1 }}>
                   Est. Implementation Cost
                 </Typography>
@@ -165,7 +165,7 @@ export default function DepartmentImpact() {
       {/* Summary Section */}
       <Grid container spacing={3} sx={{ mt: 2 }}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ p: 3, bgcolor: 'success.50' }}>
+          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.success.main}22` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <CheckCircleIcon sx={{ fontSize: '2rem', color: 'success.main' }} />
               <Box>
@@ -180,7 +180,7 @@ export default function DepartmentImpact() {
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card sx={{ p: 3, bgcolor: 'warning.50' }}>
+          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.warning.main}22` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <WarningIcon sx={{ fontSize: '2rem', color: 'warning.main' }} />
               <Box>
@@ -195,7 +195,7 @@ export default function DepartmentImpact() {
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card sx={{ p: 3, bgcolor: 'error.50' }}>
+          <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0', border: `1px solid ${theme.palette.error.main}22` }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <WarningIcon sx={{ fontSize: '2rem', color: 'error.main' }} />
               <Box>
