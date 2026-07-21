@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box, Container, Grid, Card, Typography, Chip, Button, Badge, useTheme,
 } from '@mui/material';
@@ -7,21 +8,22 @@ import GavelIcon from '@mui/icons-material/Gavel';
 import InfoIcon from '@mui/icons-material/Info';
 
 export default function RegulatoryIntelligence() {
+  const navigate = useNavigate();
   const theme = useTheme();
 
   const regulations = [
     {
       name: 'EU AI Act',
       severity: 'high',
-      date: 'Q3 2024',
+      date: 'Q3 2026',
       impact: 'Comprehensive AI governance framework',
-      departments: 3,
+      departments: 2,
       cost: '€2.1M',
     },
     {
       name: 'DORA',
       severity: 'medium',
-      date: 'Q4 2024',
+      date: 'Q4 2026',
       impact: 'Digital Operational Resilience Act',
       departments: 2,
       cost: '€1.2M',
@@ -138,13 +140,6 @@ export default function RegulatoryIntelligence() {
                         <Typography variant="caption" sx={{ fontWeight: 600, color: 'primary.main' }}>
                           Est. Cost: {reg.cost}
                         </Typography>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          endIcon={<InfoIcon sx={{ fontSize: '0.9rem' }} />}
-                        >
-                          View Impact
-                        </Button>
                       </Box>
                     </Card>
                   </TimelineContent>
@@ -187,8 +182,13 @@ export default function RegulatoryIntelligence() {
                     />
                   ))}
                 </Box>
-                <Button fullWidth variant="outlined" size="small">
-                  View Full Impact Report
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  onClick={() => navigate('/departments', { state: { framework: reg.name } })}
+                >
+                  View Impact
                 </Button>
               </Card>
             ))}

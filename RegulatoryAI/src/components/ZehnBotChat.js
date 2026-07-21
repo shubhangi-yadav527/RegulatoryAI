@@ -27,7 +27,7 @@ export function ZehnBotChat({ isOpen, onClose }) {
         regulation: 'EU AI Act',
         departments: ['Risk Management', 'Compliance', 'AI Ethics'],
         cost: '€2.1M',
-        actions: ['High Priority', 'Q3 2024 Deadline', 'Review Risk Assessment'],
+        actions: ['High Priority', 'Q3 2026 Deadline', 'Review Risk Assessment'],
       },
     },
   ]);

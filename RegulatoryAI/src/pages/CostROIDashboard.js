@@ -36,10 +36,10 @@ export default function CostROIDashboard() {
   ];
 
   const roiTimeline = [
-    { month: 'Q1 2024', roi: 0 },
-    { month: 'Q2 2024', roi: 15 },
-    { month: 'Q3 2024', roi: 35 },
-    { month: 'Q4 2024', roi: 55 },
+    { month: 'Q1 2026', roi: 0 },
+    { month: 'Q2 2026', roi: 15 },
+    { month: 'Q3 2026', roi: 35 },
+    { month: 'Q4 2026', roi: 55 },
     { month: 'Q1 2025', roi: 80 },
     { month: 'Q2 2025', roi: 120 },
   ];

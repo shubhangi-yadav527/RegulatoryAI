@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box, Card, Typography, Chip, Button, useTheme,
 } from '@mui/material';
@@ -6,22 +7,23 @@ import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineC
 
 
 export default function RegulatoryIntelligence() {
+  const navigate = useNavigate();
   const theme = useTheme();
 
   const regulations = [
     {
       name: 'EU AI Act',
       severity: 'high',
-      date: 'Q3 2024',
-      impact: 'Comprehensive AI governance framework',
-      departments: 3,
+      date: 'Q3 2026',
+      impact: 'Comprehensive AI governance & credit scoring framework',
+      departments: 2,
       cost: '€2.1M',
     },
     {
       name: 'DORA',
       severity: 'medium',
-      date: 'Q4 2024',
-      impact: 'Digital Operational Resilience Act',
+      date: 'Q4 2026',
+      impact: 'Digital Operational Resilience Act for core ICT systems',
       departments: 2,
       cost: '€1.2M',
     },
@@ -29,16 +31,16 @@ export default function RegulatoryIntelligence() {
       name: 'GDPR',
       severity: 'compliant',
       date: 'Active',
-      impact: 'Data protection compliance maintained',
-      departments: 4,
+      impact: 'Data protection & explainable AI consent logs',
+      departments: 3,
       cost: '€0.5M',
     },
     {
       name: 'Basel III',
-      severity: 'neutral',
+      severity: 'medium',
       date: 'Ongoing',
-      impact: 'Capital adequacy standards',
-      departments: 1,
+      impact: 'Capital adequacy & risk-weighted asset (RWA) standards',
+      departments: 2,
       cost: '€0.3M',
     },
   ];
@@ -157,9 +159,9 @@ export default function RegulatoryIntelligence() {
             </Typography>
           </Card>
 
-          {/* Summary Cards list */}
+          {/* All Summary Cards list */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1, overflowY: 'auto', pr: 0.5, minHeight: 0 }}>
-            {regulations.slice(0, 2).map((reg, idx) => (
+            {regulations.map((reg, idx) => (
               <Card key={idx} className="glass-card" sx={{ p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                   <Typography sx={{ fontWeight: 800, fontSize: '0.8rem' }}>
@@ -181,18 +183,26 @@ export default function RegulatoryIntelligence() {
                   {reg.impact}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 0.5, mb: 1.5, flexWrap: 'wrap' }}>
-                  {['Review Risk', 'Update Policies'].map((action, i) => (
-                    <Chip
-                      key={i}
-                      label={action}
-                      size="small"
-                      variant="outlined"
-                      sx={{ fontSize: '0.58rem', height: 16, fontWeight: 600 }}
-                    />
-                  ))}
+                  <Chip
+                    label={`${reg.departments} Impacted Depts`}
+                    size="small"
+                    sx={{ fontSize: '0.58rem', height: 16, fontWeight: 700, bgcolor: 'rgba(0, 24, 168, 0.08)', color: 'primary.main' }}
+                  />
+                  <Chip
+                    label="Review Risk"
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: '0.58rem', height: 16, fontWeight: 600 }}
+                  />
                 </Box>
-                <Button fullWidth variant="outlined" size="small" sx={{ py: 0.2, fontSize: '0.65rem', minHeight: 24 }}>
-                  Full Report
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  onClick={() => navigate('/departments', { state: { framework: reg.name } })}
+                  sx={{ py: 0.2, fontSize: '0.65rem', minHeight: 24, fontWeight: 700 }}
+                >
+                  View Impact
                 </Button>
               </Card>
             ))}

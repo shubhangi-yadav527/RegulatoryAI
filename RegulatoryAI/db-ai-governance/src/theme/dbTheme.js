@@ -4,36 +4,36 @@ export const dbTheme = createTheme({
   palette: {
     primary: {
       main: '#0018A8', // Deutsche Bank deep blue
-      light: '#4A4FD8',
-      dark: '#000D5C',
+      light: '#3B82F6',
+      dark: '#0A136B',
     },
     secondary: {
-      main: '#00A8A8', // Teal
-      light: '#40D0D0',
-      dark: '#006B6B',
+      main: '#0D9488', // Rich Vivid Teal
+      light: '#14B8A6',
+      dark: '#0F766E',
     },
     success: {
-      main: '#2DD4BF', // Green for compliance
-      light: '#5CE5DB',
-      dark: '#1B9D8C',
+      main: '#059669', // Deep Emerald Green for high compliance contrast
+      light: '#10B981',
+      dark: '#047857',
     },
     warning: {
-      main: '#FBBF24', // Amber for medium risk
-      light: '#FCDA6D',
-      dark: '#D89D1B',
+      main: '#D97706', // Rich Vivid Amber for risk contrast
+      light: '#F59E0B',
+      dark: '#B45309',
     },
     error: {
-      main: '#EF4444', // Red for high risk
-      light: '#F87171',
-      dark: '#B91C1C',
+      main: '#DC2626', // Deep Crimson Red for high risk contrast
+      light: '#EF4444',
+      dark: '#991B1B',
     },
     background: {
-      default: '#F9FAFB', // Light grey background
+      default: '#F1F5F9',
       paper: '#FFFFFF',
     },
     text: {
-      primary: '#1F2937',
-      secondary: '#6B7280',
+      primary: '#0F172A', // Ultra crisp Slate 900 dark text
+      secondary: '#475569', // Clear Slate 600 secondary text
     },
   },
   typography: {

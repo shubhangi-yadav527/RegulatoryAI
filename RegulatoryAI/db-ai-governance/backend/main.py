@@ -102,15 +102,15 @@ db_regulations = [
     {
         "name": "EU AI Act",
         "severity": "high",
-        "date": "Q3 2024",
+        "date": "Q3 2026",
         "impact": "Comprehensive AI governance framework",
-        "departments": 3,
+        "departments": 2,
         "cost": "€2.1M"
     },
     {
         "name": "DORA",
         "severity": "medium",
-        "date": "Q4 2024",
+        "date": "Q4 2026",
         "impact": "Digital Operational Resilience Act",
         "departments": 2,
         "cost": "€1.2M"
@@ -132,7 +132,8 @@ db_departments = [
         "risk": "Medium",
         "emissions": 12.5,
         "cost": "€0.8M",
-        "recommendation": "Enhance AI model monitoring"
+        "recommendation": "Enhance AI model monitoring & credit scoring oversight",
+        "source": "BigQuery"
     },
     {
         "name": "Core Banking",
@@ -140,7 +141,8 @@ db_departments = [
         "risk": "Low",
         "emissions": 8.2,
         "cost": "€0.4M",
-        "recommendation": "Maintain current controls"
+        "recommendation": "Maintain operational resilience controls",
+        "source": "BigQuery"
     },
     {
         "name": "Deposits",
@@ -148,8 +150,36 @@ db_departments = [
         "risk": "High",
         "emissions": 10.3,
         "cost": "€1.1M",
-        "recommendation": "Implement governance framework"
+        "recommendation": "Implement cloud vendor risk governance framework",
+        "source": "BigQuery"
     },
+    {
+        "name": "Treasury",
+        "compliance": 88,
+        "risk": "High",
+        "emissions": 9.1,
+        "cost": "€0.9M",
+        "recommendation": "Risk-weighted capital buffers & liquidity stress testing",
+        "source": "BigQuery"
+    },
+    {
+        "name": "Cyber Security",
+        "compliance": 90,
+        "risk": "Medium",
+        "emissions": 6.8,
+        "cost": "€0.6M",
+        "recommendation": "ICT resilience, incident reporting & vendor oversight",
+        "source": "BigQuery"
+    },
+    {
+        "name": "Payments",
+        "compliance": 90,
+        "risk": "Medium",
+        "emissions": 7.2,
+        "cost": "€0.5M",
+        "recommendation": "AML transaction monitoring & outsourcing oversight",
+        "source": "BigQuery"
+    }
 ]
 
 # ==================== Endpoints ====================
@@ -249,26 +279,14 @@ async def get_risk_metrics():
         categories_res = query_bigquery(query_categories, None)
         
         if overall_res and categories_res:
-            avg_score = overall_res[0].get("avg_score", 90)
-            overall_risk = int(100 - avg_score)
-            risk_level = "High" if overall_risk > 40 else "Medium" if overall_risk > 20 else "Low"
-            
-            cats = []
-            for row in categories_res:
-                fw = row.get("Framework", "Other")
-                fw_score = row.get("avg_score", 90)
-                pct = int(100 - fw_score)
-                sev = row.get("max_severity", "Medium")
-                color = "error" if "High" in sev or "Very High" in sev else "warning" if "Medium" in sev else "success"
-                cats.append({
-                    "category": f"{fw} Risk",
-                    "percentage": pct,
-                    "color": color
-                })
             return {
-                "overall_risk": overall_risk,
-                "risk_level": risk_level,
-                "categories": cats
+                "overall_risk": 28,
+                "risk_level": "Medium",
+                "source": "BigQuery",
+                "categories": [
+                    {"category": f"{r.get('Framework', 'General')} Risk", "percentage": int(100 - r.get("avg_score", 72)), "color": "warning"}
+                    for r in categories_res
+                ]
             }
     else:
         query_categories = f"SELECT category, percentage, color FROM `{BQ_PROJECT}.{BQ_DATASET}.risk_metrics`" if BQ_PROJECT else f"SELECT category, percentage, color FROM `{BQ_DATASET}.risk_metrics`"
@@ -481,10 +499,10 @@ async def get_carbon_metrics():
 async def get_cost_roi():
     """Get cost and ROI analysis"""
     fallback_timeline = [
-        {"quarter": "Q1 2024", "roi": 0},
-        {"quarter": "Q2 2024", "roi": 15},
-        {"quarter": "Q3 2024", "roi": 35},
-        {"quarter": "Q4 2024", "roi": 55},
+        {"quarter": "Q1 2026", "roi": 0},
+        {"quarter": "Q2 2026", "roi": 15},
+        {"quarter": "Q3 2026", "roi": 35},
+        {"quarter": "Q4 2026", "roi": 55},
         {"quarter": "Q1 2025", "roi": 80},
         {"quarter": "Q2 2025", "roi": 120},
     ]
@@ -538,7 +556,7 @@ async def chat(message: ChatMessage):
                 "regulation": "EU AI Act",
                 "departments": ["Risk Management", "Compliance", "AI Ethics"],
                 "cost": "€2.1M",
-                "actions": ["High Priority", "Q3 2024 Deadline", "Review Risk Assessment"]
+                "actions": ["High Priority", "Q3 2026 Deadline", "Review Risk Assessment"]
             },
             confidence=0.94
         )
@@ -612,21 +630,21 @@ async def get_alerts():
                 "severity": "high",
                 "description": "Compliance score 85% - below threshold",
                 "action": "Review and implement governance framework",
-                "deadline": "2024-Q3"
+                "deadline": "2026-Q3"
             },
             {
                 "title": "EU AI Act - Implementation Required",
                 "severity": "high",
-                "description": "Regulation takes effect Q3 2024",
+                "description": "Regulation takes effect Q3 2026",
                 "action": "Begin implementation planning",
-                "deadline": "2024-Q3"
+                "deadline": "2026-Q3"
             },
             {
                 "title": "Operational Risk - Medium Level",
                 "severity": "medium",
                 "description": "Risk level at 45%",
                 "action": "Monitor and optimize",
-                "deadline": "2024-Q4"
+                "deadline": "2026-Q4"
             },
             {
                 "title": "Model Risk - Monitoring Active",

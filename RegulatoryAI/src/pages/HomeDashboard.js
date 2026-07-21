@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, IconButton, Avatar, Badge, Grid, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, IconButton, Avatar, Badge, Grid, Paper, Chip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -8,7 +8,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import ChatbotIcon from '@mui/icons-material/SmartToy'; // Using SmartToy for chatbot
+import ChatbotIcon from '@mui/icons-material/SmartToy';
+import ArticleIcon from '@mui/icons-material/Article';
 
 // Styled components for Glassmorphism
 const GlassmorphicContainer = styled(Box)(({ theme }) => ({
@@ -96,6 +97,18 @@ const ChatbotWidget = styled(Box)(({ theme }) => ({
 }));
 
 export default function HomeDashboard() {
+  const [newsletter] = useState({
+    title: 'July 2026 Updates',
+    date: 'July 2026',
+    updates: [
+      'EU AI Act Implementation Timeline',
+      'DORA Resiliency Compliance Standards',
+      'Corporate ESG Green Computing Initiative',
+      'ECB Anti-Money Laundering (AMLA) Directives',
+      'EBA Crypto-Asset Exposure Risk Limits (MiCA)',
+    ],
+  });
+
   return (
     <Box sx={{
       // Removed minHeight: '100vh' from here
@@ -218,6 +231,39 @@ export default function HomeDashboard() {
                   <Typography variant="subtitle2" color="text.secondary">High Priority Alerts</Typography>
                   {/* Warning triangle placeholder */}
                   <Box sx={{ mt: 1 }}><Typography variant="h3">⚠️</Typography></Box>
+                </KPICard>
+              </Grid>
+
+              {/* Row 3: Newsletter Widget */}
+              <Grid item xs={12}>
+                <KPICard sx={{ textAlign: 'left' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.8rem', color: 'primary.main' }}>
+                      Newsletter
+                    </Typography>
+                    <Chip label={newsletter.date} size="small" variant="outlined" color="primary" />
+                  </Box>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 150, overflowY: 'auto' }}>
+                    {newsletter.updates.map((update, idx) => (
+                      <Box
+                        key={idx}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          p: 1,
+                          bgcolor: 'rgba(0, 24, 168, 0.03)',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(0, 24, 168, 0.08)',
+                        }}
+                      >
+                        <ArticleIcon sx={{ color: 'primary.main', opacity: 0.8 }} />
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          {update}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
                 </KPICard>
               </Grid>
             </Grid>

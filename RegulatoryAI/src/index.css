@@ -9,11 +9,21 @@ html, body, #root { /* Ensure #root is also transparent if it's a direct child o
 }
 
 body {
-  font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #c471ed 0%, #f64f59 30%, #12c2e9 100%);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(142, 68, 173, 0.35) 0%, transparent 50%),
+    radial-gradient(circle at 85% 15%, rgba(41, 128, 185, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(39, 174, 96, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(235, 77, 75, 0.35) 0%, transparent 50%),
+    linear-gradient(135deg, #dbe6f6 0%, #c5d9ed 50%, #e0c3fc 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 code {
@@ -23,7 +33,6 @@ code {
 
 /* Global glassmorphism utility styles */
 .glassmorphism-card {
-  background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 24px;

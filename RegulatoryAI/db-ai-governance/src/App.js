@@ -346,7 +346,7 @@ function AppLayout() {
     { label: 'Home', path: '/', icon: HomeIcon },
     { label: 'Risks', path: '/risks', icon: GridViewIcon },
     { label: 'Regulations', path: '/ai', icon: FolderIcon },
-    { label: 'ESG / Carbon', path: '/esg', icon: ForestIcon },
+    { label: 'Carbon Footprint', path: '/esg', icon: ForestIcon },
     { label: 'Departments', path: '/departments', icon: BusinessIcon },
     { label: 'Cost & ROI', path: '/roi', icon: MonetizationOnIcon },
     { label: 'Approvals', path: '/approval', icon: CheckCircleIcon },
@@ -355,7 +355,7 @@ function AppLayout() {
   const getPageTitle = () => {
     switch (currentPath) {
       case '/':
-        return 'RegNetZero';
+        return 'DB Regulatory Pulse';
       case '/risks':
         return 'Enterprise Risk Dashboard';
       case '/esg':

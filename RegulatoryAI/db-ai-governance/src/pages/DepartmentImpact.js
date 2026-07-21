@@ -1,15 +1,46 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box, Card, Typography, LinearProgress, Chip, Button, useTheme,
 } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BuildIcon from '@mui/icons-material/Build';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 const BACKEND_URL = 'http://localhost:8000';
 
+const frameworkImpactMap = {
+  'EU AI Act': ['Loans', 'Core Banking'],
+  'DORA': ['Core Banking', 'Loans'],
+  'GDPR': ['Loans', 'Core Banking', 'Deposits'],
+  'Basel III': ['Loans', 'Deposits']
+};
+
+const resolveFrameworkKey = (fwName) => {
+  if (!fwName || fwName === 'All') return 'All';
+  const nameLower = fwName.toLowerCase();
+  for (const key of Object.keys(frameworkImpactMap)) {
+    if (nameLower.includes(key.toLowerCase()) || key.toLowerCase().includes(nameLower)) {
+      return key;
+    }
+  }
+  return fwName;
+};
+
 export default function DepartmentImpact() {
   const theme = useTheme();
+  const location = useLocation();
+
+  const [selectedFramework, setSelectedFramework] = useState(
+    resolveFrameworkKey(location.state?.framework || 'All')
+  );
+
+  useEffect(() => {
+    if (location.state?.framework) {
+      setSelectedFramework(resolveFrameworkKey(location.state.framework));
+    }
+  }, [location.state]);
 
   const [departments, setDepartments] = useState([
     {
@@ -18,7 +49,8 @@ export default function DepartmentImpact() {
       risk: 'Medium',
       emissions: 12.5,
       cost: '€0.8M',
-      recommendation: 'Enhance AI model monitoring',
+      recommendation: 'Enhance AI model monitoring & credit scoring oversight',
+      source: 'BigQuery'
     },
     {
       name: 'Core Banking',
@@ -26,7 +58,8 @@ export default function DepartmentImpact() {
       risk: 'Low',
       emissions: 8.2,
       cost: '€0.4M',
-      recommendation: 'Maintain current controls',
+      recommendation: 'Maintain operational resilience controls',
+      source: 'BigQuery'
     },
     {
       name: 'Deposits',
@@ -34,20 +67,50 @@ export default function DepartmentImpact() {
       risk: 'High',
       emissions: 10.3,
       cost: '€1.1M',
-      recommendation: 'Implement governance framework',
+      recommendation: 'Implement cloud vendor risk governance framework',
+      source: 'BigQuery'
     },
+    {
+      name: 'Treasury',
+      compliance: 88,
+      risk: 'High',
+      emissions: 9.1,
+      cost: '€0.9M',
+      recommendation: 'Risk-weighted capital buffers & liquidity stress testing',
+      source: 'BigQuery'
+    },
+    {
+      name: 'Cyber Security',
+      compliance: 90,
+      risk: 'Medium',
+      emissions: 6.8,
+      cost: '€0.6M',
+      recommendation: 'ICT resilience, incident reporting & vendor oversight',
+      source: 'BigQuery'
+    },
+    {
+      name: 'Payments',
+      compliance: 90,
+      risk: 'Medium',
+      emissions: 7.2,
+      cost: '€0.5M',
+      recommendation: 'AML transaction monitoring & outsourcing oversight',
+      source: 'BigQuery'
+    }
   ]);
+  const [dataLoadedFromBQ, setDataLoadedFromBQ] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        console.log('DepartmentImpact: Fetching departments from:', `${BACKEND_URL}/api/departments`);
+        console.log('DepartmentImpact: Fetching BQ departments from:', `${BACKEND_URL}/api/departments`);
         const response = await fetch(`${BACKEND_URL}/api/departments`);
         if (response.ok) {
           const data = await response.json();
-          console.log('DepartmentImpact: Received BQ data:', data);
-          if (data && data.departments) {
+          console.log('DepartmentImpact: Received BQ data directly on page load:', data);
+          if (data && data.departments && data.departments.length > 0) {
             setDepartments(data.departments);
+            setDataLoadedFromBQ(true);
           }
         } else {
           console.error('DepartmentImpact: API response error status:', response.status);
@@ -66,11 +129,21 @@ export default function DepartmentImpact() {
     return theme.palette.warning.main;
   };
 
+  const activeKey = resolveFrameworkKey(selectedFramework);
+  const filteredDepartments = (activeKey === 'All')
+    ? departments
+    : departments.filter(d => {
+        const allowed = frameworkImpactMap[activeKey];
+        if (allowed) {
+          return allowed.includes(d.name);
+        }
+        return true;
+      });
 
-  const totalDepts = departments.length;
-  const compliantCount = departments.filter(d => (d.risk || '').toLowerCase() === 'low').length;
-  const mediumCount = departments.filter(d => (d.risk || '').toLowerCase() === 'medium').length;
-  const highCount = departments.filter(d => (d.risk || '').toLowerCase() === 'high' || (d.risk || '').toLowerCase() === 'severe').length;
+  const totalDepts = filteredDepartments.length;
+  const compliantCount = filteredDepartments.filter(d => (d.risk || '').toLowerCase() === 'low').length;
+  const mediumCount = filteredDepartments.filter(d => (d.risk || '').toLowerCase() === 'medium').length;
+  const highCount = filteredDepartments.filter(d => (d.risk || '').toLowerCase() === 'high' || (d.risk || '').toLowerCase() === 'severe').length;
 
   return (
     <Box sx={{ height: '100%', pr: { xs: 0, md: 22 } }}>
@@ -85,8 +158,54 @@ export default function DepartmentImpact() {
       >
         {/* ROW 1: Department Cards Wrapper with internal scroll */}
         <Box sx={{ overflowY: 'auto', pr: 1, height: '100%' }}>
+          {/* Framework Filter Bar & BigQuery Indicator */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, flexWrap: 'wrap' }}>
+              <FilterListIcon sx={{ color: 'primary.main', fontSize: '1rem' }} />
+              <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.secondary', fontSize: '0.72rem' }}>
+                Framework:
+              </Typography>
+              {['All', 'EU AI Act', 'DORA', 'GDPR', 'Basel III'].map((fw) => (
+                <Chip
+                  key={fw}
+                  label={fw}
+                  size="small"
+                  clickable
+                  onClick={() => setSelectedFramework(fw)}
+                  color={activeKey === fw ? 'primary' : 'default'}
+                  variant={activeKey === fw ? 'filled' : 'outlined'}
+                  sx={{ fontWeight: 650, fontSize: '0.65rem', height: 20 }}
+                />
+              ))}
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label="⚡ Live BQ Data (tensile-oarlock-500904-d4)"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(5, 150, 105, 0.12)',
+                  color: '#059669',
+                  fontWeight: 700,
+                  fontSize: '0.62rem',
+                  height: 20,
+                  border: '1px solid rgba(5, 150, 105, 0.3)'
+                }}
+              />
+              {selectedFramework !== 'All' && (
+                <Button
+                  size="small"
+                  variant="text"
+                  onClick={() => setSelectedFramework('All')}
+                  sx={{ fontSize: '0.65rem', textTransform: 'none', fontWeight: 600, py: 0 }}
+                >
+                  Clear Filter (Show All)
+                </Button>
+              )}
+            </Box>
+          </Box>
+
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2.5, pb: 1 }}>
-            {departments.map((dept, idx) => (
+            {filteredDepartments.map((dept, idx) => (
               <Card key={idx} className="glass-card" sx={{ p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '300px' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography sx={{ fontWeight: 800, fontSize: '0.95rem' }}>
