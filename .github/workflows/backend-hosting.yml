@@ -29,24 +29,30 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate Google auth inputs
+        id: auth-check
         run: |
-          if [ -n "${{ secrets.GCP_CREDENTIALS_JSON }}" ]; then
+          if [ -n "$GCP_CREDENTIALS_JSON" ]; then
             echo "Using GCP credentials JSON secret"
-          elif [ -n "${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ]; then
+            echo "method=credentials_json" >> "$GITHUB_OUTPUT"
+          elif [ -n "$GCP_WORKLOAD_IDENTITY_PROVIDER" ]; then
             echo "Using workload identity provider"
+            echo "method=workload_identity" >> "$GITHUB_OUTPUT"
           else
             echo "Set either the GCP_CREDENTIALS_JSON secret or the GCP_WORKLOAD_IDENTITY_PROVIDER and GCP_SERVICE_ACCOUNT variables."
             exit 1
           fi
+        env:
+          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
+          GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Authenticate to Google Cloud with credentials JSON
-        if: ${{ secrets.GCP_CREDENTIALS_JSON != '' }}
+        if: steps.auth-check.outputs.method == 'credentials_json'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
       - name: Authenticate to Google Cloud with workload identity
-        if: ${{ secrets.GCP_CREDENTIALS_JSON == '' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' }}
+        if: steps.auth-check.outputs.method == 'workload_identity'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
