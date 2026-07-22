@@ -16,10 +16,13 @@
     "browserslist": "^4.28.6",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^6.30.0",
     "react-scripts": "5.0.1",
     "recharts": "^3.9.2",
     "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -5,7 +5,9 @@
   text-align: unset; /* Reset text-align */
 }
 
-.App-logo, .App-header, .App-link {
+.App-logo,
+.App-header,
+.App-link {
   /* Remove or reset these if they are not needed */
   display: none; /* Hide them if they are not part of the new design */
 }

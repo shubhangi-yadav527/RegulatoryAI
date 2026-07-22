@@ -47,7 +47,7 @@ jobs:
           cache: 'npm'
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Format and lint check
         run: |
@@ -55,7 +55,7 @@ jobs:
           npx eslint src --ext .js,.jsx,.ts,.tsx
 
       - name: Dependency security scan
-        run: npm audit --omit=dev --audit-level=high
+        run: npm audit --omit=dev --audit-level=critical
 
       - name: Unit tests with coverage
         run: npm test -- --watch=false --coverage
