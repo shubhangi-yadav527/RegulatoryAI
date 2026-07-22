@@ -1,0 +1,51 @@
+name: cloudrun-wire-frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      backend_service_url:
+        description: 'Cloud Run backend URL, for example https://regulatoryai-backend-xxxxx-uc.a.run.app'
+        required: true
+        type: string
+  workflow_run:
+    workflows: [cloudrun-deploy]
+    types: [completed]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  wire-frontend:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Determine backend URL
+        id: backend
+        run: |
+          if [ -n "${{ github.event.inputs.backend_service_url }}" ]; then
+            echo "url=${{ github.event.inputs.backend_service_url }}" >> "$GITHUB_OUTPUT"
+          else
+            BACKEND_URL="$(gcloud run services describe regulatoryai-backend --region=${{ vars.GCP_REGION || 'us-central1' }} --format='value(status.url)' 2>/dev/null || true)"
+            echo "url=$BACKEND_URL" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update frontend service environment variable
+        if: ${{ steps.backend.outputs.url != '' }}
+        run: |
+          gcloud run services update regulatoryai-frontend \
+            --region=${{ vars.GCP_REGION || 'us-central1' }} \
+            --update-env-vars REACT_APP_BACKEND_URL=${{ steps.backend.outputs.url }} \
+            --project=${{ vars.GCP_PROJECT_ID }}
