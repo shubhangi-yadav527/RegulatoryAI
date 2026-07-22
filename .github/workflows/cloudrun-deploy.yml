@@ -33,6 +33,16 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Validate required variables
+        run: |
+          if [ -z "$GCP_PROJECT_ID" ]; then
+            echo "ERROR: GCP_PROJECT_ID repository variable is not set."
+            echo "Go to Settings > Secrets and variables > Actions > Variables and add GCP_PROJECT_ID."
+            exit 1
+          fi
+        env:
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+
       - name: Validate Google auth inputs
         id: auth-check
         run: |
