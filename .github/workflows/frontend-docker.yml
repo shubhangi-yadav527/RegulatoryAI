@@ -18,7 +18,7 @@ on:
           - prod
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/frontend
+  IMAGE_NAME: ${{ github.repository_owner }}/regulatoryai/frontend
   IMAGE_TAG: ${{ github.sha }}
 
 permissions:
