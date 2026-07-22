@@ -1,11 +1,27 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
-  Box, Container, Grid, Card, Typography, Chip, Button, Badge, useTheme,
-} from '@mui/material';
-import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineOppositeContent, TimelineDot } from '@mui/lab';
-import GavelIcon from '@mui/icons-material/Gavel';
-import InfoIcon from '@mui/icons-material/Info';
+  Box,
+  Container,
+  Grid,
+  Card,
+  Typography,
+  Chip,
+  Button,
+  Badge,
+  useTheme,
+} from "@mui/material";
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineOppositeContent,
+  TimelineDot,
+} from "@mui/lab";
+import GavelIcon from "@mui/icons-material/Gavel";
+import InfoIcon from "@mui/icons-material/Info";
 
 export default function RegulatoryIntelligence() {
   const navigate = useNavigate();
@@ -16,41 +32,43 @@ export default function RegulatoryIntelligence() {
 
   const regulations = [
     {
-      name: 'EU AI Act',
-      severity: 'high',
-      date: 'Q3 2026',
-      impact: 'Comprehensive AI governance framework',
+      name: "EU AI Act",
+      severity: "high",
+      date: "Q3 2026",
+      impact: "Comprehensive AI governance framework",
       departments: 2,
-      cost: '€2.1M',
+      cost: "€2.1M",
     },
     {
-      name: 'DORA',
-      severity: 'medium',
-      date: 'Q4 2026',
-      impact: 'Digital Operational Resilience Act',
+      name: "DORA",
+      severity: "medium",
+      date: "Q4 2026",
+      impact: "Digital Operational Resilience Act",
       departments: 2,
-      cost: '€1.2M',
+      cost: "€1.2M",
     },
     {
-      name: 'GDPR',
-      severity: 'compliant',
-      date: 'Active',
-      impact: 'Data protection compliance maintained',
+      name: "GDPR",
+      severity: "compliant",
+      date: "Active",
+      impact: "Data protection compliance maintained",
       departments: 4,
-      cost: '€0.5M',
+      cost: "€0.5M",
     },
     {
-      name: 'Basel III',
-      severity: 'neutral',
-      date: 'Ongoing',
-      impact: 'Capital adequacy standards',
+      name: "Basel III",
+      severity: "neutral",
+      date: "Ongoing",
+      impact: "Capital adequacy standards",
       departments: 1,
-      cost: '€0.3M',
+      cost: "€0.3M",
     },
   ];
 
   const filteredRegulations = filterSeverity
-    ? regulations.filter(r => r.severity.toLowerCase() === filterSeverity.toLowerCase())
+    ? regulations.filter(
+        (r) => r.severity.toLowerCase() === filterSeverity.toLowerCase(),
+      )
     : regulations;
 
   const getSeverityColor = (severity) => {
@@ -58,19 +76,19 @@ export default function RegulatoryIntelligence() {
       high: theme.palette.error.main,
       medium: theme.palette.warning.main,
       compliant: theme.palette.success.main,
-      neutral: '#9CA3AF',
+      neutral: "#9CA3AF",
     };
     return colors[severity] || theme.palette.primary.main;
   };
 
   const getSeverityLabel = (severity) => {
     const labels = {
-      high: 'High',
-      medium: 'Medium',
-      compliant: 'Compliant',
-      neutral: 'Neutral',
+      high: "High",
+      medium: "Medium",
+      compliant: "Compliant",
+      neutral: "Neutral",
     };
-    return labels[severity] || 'Unknown';
+    return labels[severity] || "Unknown";
   };
 
   return (
@@ -80,31 +98,49 @@ export default function RegulatoryIntelligence() {
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
             Regulatory Intelligence
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-            AI-generated summaries and impact assessments of active and upcoming regulations
+          <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
+            AI-generated summaries and impact assessments of active and upcoming
+            regulations
           </Typography>
         </Grid>
 
         {/* Timeline */}
         <Grid item xs={12} md={7}>
-          <Card sx={{ p: 4, background: theme.palette.background.paper, color: '#E0E0E0' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Card
+            sx={{
+              p: 4,
+              background: theme.palette.background.paper,
+              color: "#E0E0E0",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 3,
+              }}
+            >
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                Regulations Timeline {filterSeverity && `(${getSeverityLabel(filterSeverity)})`}
+                Regulations Timeline{" "}
+                {filterSeverity && `(${getSeverityLabel(filterSeverity)})`}
               </Typography>
               {filterSeverity && (
                 <Chip
                   label="Clear"
                   size="small"
-                  onDelete={() => navigate('/ai', { replace: true, state: {} })}
+                  onDelete={() => navigate("/ai", { replace: true, state: {} })}
                   color="primary"
-                  sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700 }}
+                  sx={{ height: 22, fontSize: "0.7rem", fontWeight: 700 }}
                 />
               )}
             </Box>
             <Timeline position="alternate">
               {filteredRegulations.map((reg, idx) => (
-                <TimelineItem key={idx} position={idx % 2 === 0 ? 'left' : 'right'}>
+                <TimelineItem
+                  key={idx}
+                  position={idx % 2 === 0 ? "left" : "right"}
+                >
                   <TimelineOppositeContent color="textSecondary">
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
                       {reg.date}
@@ -118,27 +154,36 @@ export default function RegulatoryIntelligence() {
                         height: 16,
                       }}
                     />
-                    {idx < filteredRegulations.length - 1 && <TimelineConnector />}
+                    {idx < filteredRegulations.length - 1 && (
+                      <TimelineConnector />
+                    )}
                   </TimelineSeparator>
                   <TimelineContent sx={{ pb: 3 }}>
                     <Card
                       sx={{
                         p: 2,
                         background: theme.palette.background.paper,
-                        color: '#E0E0E0',
+                        color: "#E0E0E0",
                         border: `1px solid ${getSeverityColor(reg.severity)}22`,
                       }}
                     >
                       <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
                         {reg.name}
                       </Typography>
-                      <Box sx={{ display: 'flex', gap: 1, mb: 1, flexWrap: 'wrap' }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: 1,
+                          mb: 1,
+                          flexWrap: "wrap",
+                        }}
+                      >
                         <Chip
                           label={getSeverityLabel(reg.severity)}
                           size="small"
                           sx={{
                             bgcolor: getSeverityColor(reg.severity),
-                            color: 'white',
+                            color: "white",
                             fontWeight: 600,
                           }}
                         />
@@ -148,17 +193,23 @@ export default function RegulatoryIntelligence() {
                           variant="outlined"
                         />
                       </Box>
-                      <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ mb: 2, color: "text.secondary" }}
+                      >
                         {reg.impact}
                       </Typography>
                       <Box
                         sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
                         }}
                       >
-                        <Typography variant="caption" sx={{ fontWeight: 600, color: 'primary.main' }}>
+                        <Typography
+                          variant="caption"
+                          sx={{ fontWeight: 600, color: "primary.main" }}
+                        >
                           Est. Cost: {reg.cost}
                         </Typography>
                       </Box>
@@ -172,10 +223,23 @@ export default function RegulatoryIntelligence() {
 
         {/* Summary Cards */}
         <Grid item xs={12} md={5}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {filteredRegulations.map((reg, idx) => (
-              <Card key={idx} sx={{ p: 2.5, background: theme.palette.background.paper, color: '#E0E0E0' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Card
+                key={idx}
+                sx={{
+                  p: 2.5,
+                  background: theme.palette.background.paper,
+                  color: "#E0E0E0",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     {reg.name}
                   </Typography>
@@ -184,59 +248,86 @@ export default function RegulatoryIntelligence() {
                     size="small"
                     sx={{
                       bgcolor: getSeverityColor(reg.severity),
-                      color: 'white',
+                      color: "white",
                       fontWeight: 600,
                     }}
                   />
                 </Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: "text.secondary", display: "block", mb: 1.5 }}
+                >
                   {reg.impact}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-                  {['Review Risk', 'Update Policies', 'Training Required'].map((action, i) => (
-                    <Chip
-                      key={i}
-                      label={action}
-                      size="small"
-                      variant="outlined"
-                      onClick={action === 'Review Risk' ? () => navigate('/risks', { state: { regulation: reg.name } }) : undefined}
-                      sx={{ 
-                        fontSize: '0.75rem',
-                        cursor: action === 'Review Risk' ? 'pointer' : 'default',
-                        ...(action === 'Review Risk' && {
-                          borderColor: 'primary.main',
-                          color: 'primary.main',
-                          fontWeight: 700,
-                          bgcolor: 'rgba(0, 24, 168, 0.02)',
-                          '&:hover': {
-                            bgcolor: 'rgba(0, 0, 0, 0.08)',
-                            borderColor: 'rgba(0, 0, 0, 0.2)',
-                            color: 'text.primary'
-                          }
-                        })
-                      }}
-                    />
-                  ))}
+                <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
+                  {["Review Risk", "Update Policies", "Training Required"].map(
+                    (action, i) => (
+                      <Chip
+                        key={i}
+                        label={action}
+                        size="small"
+                        variant="outlined"
+                        onClick={
+                          action === "Review Risk"
+                            ? () =>
+                                navigate("/risks", {
+                                  state: { regulation: reg.name },
+                                })
+                            : undefined
+                        }
+                        sx={{
+                          fontSize: "0.75rem",
+                          cursor:
+                            action === "Review Risk" ? "pointer" : "default",
+                          ...(action === "Review Risk" && {
+                            borderColor: "primary.main",
+                            color: "primary.main",
+                            fontWeight: 700,
+                            bgcolor: "rgba(0, 24, 168, 0.02)",
+                            "&:hover": {
+                              bgcolor: "rgba(0, 0, 0, 0.08)",
+                              borderColor: "rgba(0, 0, 0, 0.2)",
+                              color: "text.primary",
+                            },
+                          }),
+                        }}
+                      />
+                    ),
+                  )}
                 </Box>
                 <Button
                   fullWidth
                   variant="outlined"
                   size="small"
-                  onClick={() => navigate('/departments', { state: { framework: reg.name } })}
+                  onClick={() =>
+                    navigate("/departments", { state: { framework: reg.name } })
+                  }
                 >
                   View Impact
                 </Button>
               </Card>
             ))}
 
-            <Card sx={{ p: 2.5, background: theme.palette.background.paper, color: '#E0E0E0' }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main', mb: 1 }}>
+            <Card
+              sx={{
+                p: 2.5,
+                background: theme.palette.background.paper,
+                color: "#E0E0E0",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 600, color: "primary.main", mb: 1 }}
+              >
                 📊 Compliance Score
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 700, color: "primary.main", mb: 1 }}
+              >
                 82%
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
                 Across all active regulations
               </Typography>
             </Card>

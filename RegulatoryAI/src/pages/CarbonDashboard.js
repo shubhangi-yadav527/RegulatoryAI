@@ -1,38 +1,59 @@
-import React from 'react';
+import React from "react";
 import {
-  Box, Container, Grid, Card, Typography, useTheme,
-} from '@mui/material';
-import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { KPICard } from '../components/KPICards';
+  Box,
+  Container,
+  Grid,
+  Card,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import {
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { KPICard } from "../components/KPICards";
 
 export default function CarbonDashboard() {
   const theme = useTheme();
 
   const monthlyData = [
-    { month: 'Jan', co2: 38 },
-    { month: 'Feb', co2: 36 },
-    { month: 'Mar', co2: 34 },
-    { month: 'Apr', co2: 32 },
-    { month: 'May', co2: 30 },
-    { month: 'Jun', co2: 31 },
+    { month: "Jan", co2: 38 },
+    { month: "Feb", co2: 36 },
+    { month: "Mar", co2: 34 },
+    { month: "Apr", co2: 32 },
+    { month: "May", co2: 30 },
+    { month: "Jun", co2: 31 },
   ];
 
   const departmentEmissions = [
-    { name: 'Core Banking', value: 42 },
-    { name: 'Loans', value: 35 },
-    { name: 'Deposits', value: 23 },
+    { name: "Core Banking", value: 42 },
+    { name: "Loans", value: 35 },
+    { name: "Deposits", value: 23 },
   ];
 
-  const COLORS = [theme.palette.success.main, theme.palette.secondary.main, theme.palette.success.light];
+  const COLORS = [
+    theme.palette.success.main,
+    theme.palette.secondary.main,
+    theme.palette.success.light,
+  ];
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
         Carbon & Sustainability Dashboard
       </Typography>
-      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+      <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
         Track environmental impact and AI-driven optimization recommendations
       </Typography>
 
@@ -40,64 +61,101 @@ export default function CarbonDashboard() {
         {/* KPI Cards */}
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 2.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-              <VerifiedIcon sx={{ fontSize: '1.5rem', color: 'success.main' }} />
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
+            >
+              <VerifiedIcon
+                sx={{ fontSize: "1.5rem", color: "success.main" }}
+              />
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", fontWeight: 500 }}
+              >
                 Current CO₂
               </Typography>
             </Box>
             <Typography variant="h5" sx={{ fontWeight: 700 }}>
               31 Tons
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Monthly baseline
             </Typography>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 2.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-              <WarningAmberIcon sx={{ fontSize: '1.5rem', color: 'secondary.main' }} />
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
+            >
+              <WarningAmberIcon
+                sx={{ fontSize: "1.5rem", color: "secondary.main" }}
+              />
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", fontWeight: 500 }}
+              >
                 AI Optimized
               </Typography>
             </Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: 'success.main' }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 700, color: "success.main" }}
+            >
               18.6 Tons
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
               40% reduction
             </Typography>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 2.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-              <VerifiedIcon sx={{ fontSize: '1.5rem', color: 'success.light' }} />
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
+            >
+              <VerifiedIcon
+                sx={{ fontSize: "1.5rem", color: "success.light" }}
+              />
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", fontWeight: 500 }}
+              >
                 Carbon Saved
               </Typography>
             </Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: 'success.main' }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 700, color: "success.main" }}
+            >
               12.4 Tons
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Annual impact
             </Typography>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 2.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-              <VerifiedIcon sx={{ fontSize: '1.5rem', color: 'primary.main' }} />
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}
+            >
+              <VerifiedIcon
+                sx={{ fontSize: "1.5rem", color: "primary.main" }}
+              />
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", fontWeight: 500 }}
+              >
                 Tree Equivalent
               </Typography>
             </Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 700, color: "primary.main" }}
+            >
               2,054
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Trees to offset
             </Typography>
           </Card>
@@ -116,7 +174,7 @@ export default function CarbonDashboard() {
                 <YAxis />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FFF',
+                    backgroundColor: "#FFF",
                     border: `1px solid ${theme.palette.primary.main}`,
                   }}
                 />
@@ -135,7 +193,7 @@ export default function CarbonDashboard() {
 
         {/* Department Emissions Pie */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ p: 3, textAlign: 'center' }}>
+          <Card sx={{ p: 3, textAlign: "center" }}>
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
               Emissions by Department
             </Typography>
@@ -167,41 +225,57 @@ export default function CarbonDashboard() {
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
               🤖 Green Recommendations
             </Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
               {[
                 {
-                  title: 'Optimize Data Center Operations',
-                  impact: '~4.2 Tons CO₂/year',
-                  status: 'High Impact',
+                  title: "Optimize Data Center Operations",
+                  impact: "~4.2 Tons CO₂/year",
+                  status: "High Impact",
                 },
                 {
-                  title: 'Implement Cloud Auto-Scaling',
-                  impact: '~3.8 Tons CO₂/year',
-                  status: 'Medium Impact',
+                  title: "Implement Cloud Auto-Scaling",
+                  impact: "~3.8 Tons CO₂/year",
+                  status: "Medium Impact",
                 },
                 {
-                  title: 'Reduce Compliance Report Frequency',
-                  impact: '~2.1 Tons CO₂/year',
-                  status: 'Quick Win',
+                  title: "Reduce Compliance Report Frequency",
+                  impact: "~2.1 Tons CO₂/year",
+                  status: "Quick Win",
                 },
                 {
-                  title: 'Adopt Sustainable Vendors',
-                  impact: '~2.3 Tons CO₂/year',
-                  status: 'Strategic',
+                  title: "Adopt Sustainable Vendors",
+                  impact: "~2.3 Tons CO₂/year",
+                  status: "Strategic",
                 },
               ].map((rec, i) => (
-                <Card key={i} sx={{ p: 2, bgcolor: 'success.50', borderLeft: `4px solid ${theme.palette.success.main}` }}>
+                <Card
+                  key={i}
+                  sx={{
+                    p: 2,
+                    bgcolor: "success.50",
+                    borderLeft: `4px solid ${theme.palette.success.main}`,
+                  }}
+                >
                   <Typography variant="body2" sx={{ fontWeight: 700, mb: 0.5 }}>
                     {rec.title}
                   </Typography>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "text.secondary", display: "block", mb: 1 }}
+                  >
                     Potential: {rec.impact}
                   </Typography>
                   <Typography
                     variant="caption"
                     sx={{
-                      bgcolor: 'success.light',
-                      color: 'white',
+                      bgcolor: "success.light",
+                      color: "white",
                       px: 1,
                       py: 0.5,
                       borderRadius: 1,
