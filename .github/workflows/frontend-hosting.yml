@@ -32,7 +32,25 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
+      - name: Validate Google auth inputs
+        run: |
+          if [ -n "${{ secrets.GCP_CREDENTIALS_JSON }}" ]; then
+            echo "Using GCP credentials JSON secret"
+          elif [ -n "${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}" ]; then
+            echo "Using workload identity provider"
+          else
+            echo "Set either the GCP_CREDENTIALS_JSON secret or the GCP_WORKLOAD_IDENTITY_PROVIDER and GCP_SERVICE_ACCOUNT variables."
+            exit 1
+          fi
+
+      - name: Authenticate to Google Cloud with credentials JSON
+        if: ${{ secrets.GCP_CREDENTIALS_JSON != '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+
+      - name: Authenticate to Google Cloud with workload identity
+        if: ${{ secrets.GCP_CREDENTIALS_JSON == '' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' }}
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
