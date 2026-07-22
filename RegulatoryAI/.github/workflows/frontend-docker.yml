@@ -132,7 +132,7 @@ jobs:
       - name: Job summary
         run: |
           echo "## Frontend container image" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "### - Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Scan policy: fail on CRITICAL vulnerabilities" >> "$GITHUB_STEP_SUMMARY"
 
   integration-tests:
