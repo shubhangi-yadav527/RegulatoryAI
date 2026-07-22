@@ -128,5 +128,7 @@ Set these in the repository or organization settings under Secrets and variables
 ### Optional GitHub repository variable
 
 - `GCP_REGION` is also used by the deployment workflows as the default deployment region if not overridden.
+- `GCP_ARTIFACT_REGISTRY_REPOSITORY` overrides the default Artifact Registry repository name (`regulatoryai`) used by the deployment workflows.
+- If the configured Artifact Registry repository does not already exist, the deployment workflows will create it automatically before pushing images.
 
   ### Test the flow

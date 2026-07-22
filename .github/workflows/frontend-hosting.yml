@@ -21,7 +21,8 @@ env:
   PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   REGION: ${{ vars.GCP_REGION || 'us-central1' }}
   GAR_LOCATION: ${{ vars.GCP_REGION || 'us-central1' }}
-  FRONTEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/regulatoryai/frontend
+  GAR_REPOSITORY: ${{ vars.GCP_ARTIFACT_REGISTRY_REPOSITORY || 'regulatoryai' }}
+  FRONTEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REGISTRY_REPOSITORY || 'regulatoryai' }}/frontend
   SERVICE_NAME: ${{ vars.GCP_FRONTEND_SERVICE_NAME || 'regulatoryai-frontend' }}
   REACT_APP_BACKEND_URL: ${{ vars.REACT_APP_BACKEND_URL || '' }}
 
@@ -77,6 +78,17 @@ jobs:
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
+
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          if ! gcloud artifacts repositories describe "${{ env.GAR_REPOSITORY }}" \
+            --location="${{ env.GAR_LOCATION }}" \
+            --project="${{ env.PROJECT_ID }}" >/dev/null 2>&1; then
+            gcloud artifacts repositories create "${{ env.GAR_REPOSITORY }}" \
+              --repository-format=docker \
+              --location="${{ env.GAR_LOCATION }}" \
+              --project="${{ env.PROJECT_ID }}"
+          fi
 
       - name: Build and push frontend image
         working-directory: RegulatoryAI
