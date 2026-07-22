@@ -18,7 +18,7 @@ env:
   PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   REGION: ${{ vars.GCP_REGION || 'us-central1' }}
   GAR_LOCATION: ${{ vars.GCP_REGION || 'us-central1' }}
-  BACKEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/regulatoryai/backend
+  GAR_REPOSITORY: ${{ vars.GCP_ARTIFACT_REGISTRY_REPOSITORY || 'regulatoryai' }}
   SERVICE_NAME: ${{ vars.GCP_BACKEND_SERVICE_NAME || 'regulatoryai-backend' }}
 
 jobs:
@@ -64,16 +64,29 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
 
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          if ! gcloud artifacts repositories describe "${{ env.GAR_REPOSITORY }}" \
+            --location="${{ env.GAR_LOCATION }}" \
+            --project="${{ env.PROJECT_ID }}" >/dev/null 2>&1; then
+            gcloud artifacts repositories create "${{ env.GAR_REPOSITORY }}" \
+              --repository-format=docker \
+              --location="${{ env.GAR_LOCATION }}" \
+              --project="${{ env.PROJECT_ID }}"
+          fi
+
       - name: Build and push backend image
         working-directory: RegulatoryAI
         run: |
-          docker build -f backend/Dockerfile -t ${{ env.BACKEND_IMAGE }}:${{ github.sha }} ./backend
-          docker push ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          IMAGE_URI="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/backend:${{ github.sha }}"
+          docker build -f backend/Dockerfile -t "$IMAGE_URI" ./backend
+          docker push "$IMAGE_URI"
 
       - name: Deploy backend to Cloud Run
         run: |
+          IMAGE_URI="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/backend:${{ github.sha }}"
           gcloud run deploy "${{ env.SERVICE_NAME }}" \
-            --image=${{ env.BACKEND_IMAGE }}:${{ github.sha }} \
+            --image="$IMAGE_URI" \
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
