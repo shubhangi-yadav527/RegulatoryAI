@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box, Card, Typography, Chip, Button, useTheme,
 } from '@mui/material';
@@ -8,7 +8,10 @@ import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineC
 
 export default function RegulatoryIntelligence() {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
+
+  const filterSeverity = location.state?.filterSeverity || null;
 
   const regulations = [
     {
@@ -45,6 +48,10 @@ export default function RegulatoryIntelligence() {
     },
   ];
 
+  const filteredRegulations = filterSeverity
+    ? regulations.filter(r => r.severity.toLowerCase() === filterSeverity.toLowerCase())
+    : regulations;
+
   const getSeverityColor = (severity) => {
     const colors = {
       high: theme.palette.error.main,
@@ -66,25 +73,37 @@ export default function RegulatoryIntelligence() {
   };
 
   return (
-    <Box sx={{ height: '100%', pr: { xs: 0, md: 22 } }}>
+    <Box sx={{ height: '100%', pr: { xs: 0, md: 5 } }}>
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: '1.3fr 1fr' },
           gap: 2.5,
+          maxWidth: '1060px',
           height: { xs: 'auto', md: 'calc(84vh - 120px)' },
           minHeight: { xs: 'auto', md: '520px' }
         }}
       >
         {/* Column 1: Timeline Card with internal scrolling */}
         <Card className="glass-card" sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', mb: 1 }}>
-            Upcoming Regulations Timeline
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
+              Upcoming Regulations Timeline {filterSeverity && `(${getSeverityLabel(filterSeverity)})`}
+            </Typography>
+            {filterSeverity && (
+              <Chip
+                label="Clear"
+                size="small"
+                onDelete={() => navigate('/ai', { replace: true, state: {} })}
+                color="primary"
+                sx={{ height: 18, fontSize: '0.62rem', fontWeight: 700 }}
+              />
+            )}
+          </Box>
           <Box sx={{ flexGrow: 1, overflowY: 'auto', pr: 1 }}>
             <Timeline position="alternate" sx={{ p: 0 }}>
-              {regulations.map((reg, idx) => (
-                <TimelineItem key={idx}>
+              {filteredRegulations.map((reg, idx) => (
+                <TimelineItem key={idx} position={idx % 2 === 0 ? 'left' : 'right'}>
                   <TimelineOppositeContent color="textSecondary" sx={{ py: 1, px: 1 }}>
                     <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.65rem' }}>
                       {reg.date}
@@ -100,7 +119,7 @@ export default function RegulatoryIntelligence() {
                         my: 1
                       }}
                     />
-                    {idx < regulations.length - 1 && <TimelineConnector />}
+                    {idx < filteredRegulations.length - 1 && <TimelineConnector />}
                   </TimelineSeparator>
                   <TimelineContent sx={{ py: 1, px: 1 }}>
                     <Box
@@ -154,14 +173,14 @@ export default function RegulatoryIntelligence() {
                 Across all active regulations
               </Typography>
             </Box>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.8rem' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.3rem' }}>
               82%
             </Typography>
           </Card>
 
           {/* All Summary Cards list */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1, overflowY: 'auto', pr: 0.5, minHeight: 0 }}>
-            {regulations.map((reg, idx) => (
+            {filteredRegulations.map((reg, idx) => (
               <Card key={idx} className="glass-card" sx={{ p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                   <Typography sx={{ fontWeight: 800, fontSize: '0.8rem' }}>
@@ -192,7 +211,21 @@ export default function RegulatoryIntelligence() {
                     label="Review Risk"
                     size="small"
                     variant="outlined"
-                    sx={{ fontSize: '0.58rem', height: 16, fontWeight: 600 }}
+                    onClick={() => navigate('/risks', { state: { regulation: reg.name } })}
+                    sx={{ 
+                      fontSize: '0.58rem', 
+                      height: 16, 
+                      fontWeight: 700, 
+                      cursor: 'pointer',
+                      borderColor: 'primary.main',
+                      color: 'primary.main',
+                      bgcolor: 'rgba(0, 24, 168, 0.02)',
+                      '&:hover': {
+                        bgcolor: 'rgba(0, 0, 0, 0.08)',
+                        borderColor: 'rgba(0, 0, 0, 0.2)',
+                        color: 'text.primary'
+                      }
+                    }}
                   />
                 </Box>
                 <Button
@@ -202,7 +235,7 @@ export default function RegulatoryIntelligence() {
                   onClick={() => navigate('/departments', { state: { framework: reg.name } })}
                   sx={{ py: 0.2, fontSize: '0.65rem', minHeight: 24, fontWeight: 700 }}
                 >
-                  View Impact
+                  View Department Impact
                 </Button>
               </Card>
             ))}

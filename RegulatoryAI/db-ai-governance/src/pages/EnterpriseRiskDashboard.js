@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Box, Card, Typography, useTheme,
+  Box, Card, Typography, Chip, useTheme,
 } from '@mui/material';
 import { ProgressCard } from '../components/KPICards';
 
@@ -8,6 +9,17 @@ const BACKEND_URL = 'http://localhost:8000';
 
 export default function EnterpriseRiskDashboard() {
   const theme = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const filterRegulation = location.state?.regulation || null;
+
+  const REGULATION_RISKS_MAP = {
+    'EU AI Act': ['Model Risk', 'AI Explanation Risk', 'Compliance Risk'],
+    'DORA': ['Cyber Risk', 'Operational Risk'],
+    'GDPR': ['Cyber Risk', 'Compliance Risk'],
+    'Basel III': ['FSG Risk', 'Operational Risk']
+  };
 
   const [riskData, setRiskData] = useState({
     overall_risk: 72,
@@ -21,6 +33,22 @@ export default function EnterpriseRiskDashboard() {
       { category: 'AI Explanation Risk', percentage: 22, color: 'success' },
     ]
   });
+
+  const filteredCategories = filterRegulation && REGULATION_RISKS_MAP[filterRegulation]
+    ? riskData.categories.filter(c => REGULATION_RISKS_MAP[filterRegulation].includes(c.category))
+    : riskData.categories;
+
+  const overallRiskScore = filteredCategories.length > 0
+    ? Math.round(filteredCategories.reduce((acc, curr) => acc + curr.percentage, 0) / filteredCategories.length)
+    : 0;
+
+  const getRiskLevelFromScore = (score) => {
+    if (score < 30) return 'Low';
+    if (score > 60) return 'High';
+    return 'Medium';
+  };
+
+  const overallRiskLevel = getRiskLevelFromScore(overallRiskScore);
 
   useEffect(() => {
     const fetchRiskData = async () => {
@@ -56,12 +84,13 @@ export default function EnterpriseRiskDashboard() {
   };
 
   return (
-    <Box sx={{ height: '100%', pr: { xs: 0, md: 22 } }}>
+    <Box sx={{ height: '100%', pr: { xs: 0, md: 5 } }}>
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: '1fr 2fr' },
           gap: 2.5,
+          maxWidth: '1060px',
           height: { xs: 'auto', md: 'calc(84vh - 120px)' },
           minHeight: { xs: 'auto', md: '520px' }
         }}
@@ -78,7 +107,7 @@ export default function EnterpriseRiskDashboard() {
                 width: 170,
                 height: 170,
                 borderRadius: '50%',
-                background: `conic-gradient(${getRiskColor(riskData.risk_level)} 0deg ${riskData.overall_risk * 3.6}deg, rgba(0, 24, 168, 0.08) ${riskData.overall_risk * 3.6}deg 360deg)`,
+                background: `conic-gradient(${getRiskColor(overallRiskLevel)} 0deg ${overallRiskScore * 3.6}deg, rgba(0, 24, 168, 0.08) ${overallRiskScore * 3.6}deg 360deg)`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -97,19 +126,19 @@ export default function EnterpriseRiskDashboard() {
                   flexDirection: 'column',
                 }}
               >
-                <Typography variant="h4" sx={{ fontWeight: 800, color: `${getRiskThemeName(riskData.risk_level)}.main` }}>
-                  {riskData.overall_risk}%
+                <Typography variant="h4" sx={{ fontWeight: 800, color: `${getRiskThemeName(overallRiskLevel)}.main`, fontSize: '1.3rem' }}>
+                  {overallRiskScore}%
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.65rem' }}>
-                  {riskData.risk_level}
+                  {overallRiskLevel}
                 </Typography>
               </Box>
             </Box>
             <Typography variant="caption" sx={{ color: 'text.secondary', mt: 2, fontWeight: 500, fontSize: '0.65rem' }}>
-              Based on {riskData.categories.length} risk categories
+              Based on {filteredCategories.length} risk categories
             </Typography>
           </Card>
-
+ 
           {/* Detailed Analysis Summary */}
           <Card className="glass-card" sx={{ p: 2, height: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', mb: 1, display: 'block' }}>
@@ -117,9 +146,9 @@ export default function EnterpriseRiskDashboard() {
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
               {[
-                { title: 'Critical', value: riskData.categories.filter(c => c.color === 'error').length.toString(), color: 'error' },
-                { title: 'Medium', value: riskData.categories.filter(c => c.color === 'warning').length.toString(), color: 'warning' },
-                { title: 'Low Priority', value: riskData.categories.filter(c => c.color === 'success').length.toString(), color: 'success' },
+                { title: 'Critical', value: filteredCategories.filter(c => c.color === 'error').length.toString(), color: 'error' },
+                { title: 'Medium', value: filteredCategories.filter(c => c.color === 'warning').length.toString(), color: 'warning' },
+                { title: 'Low Priority', value: filteredCategories.filter(c => c.color === 'success').length.toString(), color: 'success' },
               ].map((item, i) => (
                 <Box key={i} sx={{ p: 1, bgcolor: `${theme.palette[item.color].main}10`, borderRadius: 1.5, textAlign: 'center', border: `1px solid ${theme.palette[item.color].main}20` }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: theme.palette[item.color].main, fontSize: '0.85rem' }}>
@@ -133,16 +162,27 @@ export default function EnterpriseRiskDashboard() {
             </Box>
           </Card>
         </Box>
-
+ 
         {/* Column 2: Categories + Trend */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
           {/* Risk Categories */}
           <Card className="glass-card" sx={{ p: 2, flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', mb: 1.5, display: 'block' }}>
-              Risk Category Breakdown
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
+                Risk Category Breakdown {filterRegulation && `(${filterRegulation})`}
+              </Typography>
+              {filterRegulation && (
+                <Chip
+                  label="Clear"
+                  size="small"
+                  onDelete={() => navigate('/risks', { replace: true, state: {} })}
+                  color="primary"
+                  sx={{ height: 18, fontSize: '0.62rem', fontWeight: 700 }}
+                />
+              )}
+            </Box>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1 }}>
-              {riskData.categories.map((risk, idx) => (
+              {filteredCategories.map((risk, idx) => (
                 <ProgressCard
                   key={idx}
                   title={risk.category}
@@ -159,7 +199,7 @@ export default function EnterpriseRiskDashboard() {
               Trend Analysis (Last 90 Days)
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1, height: 60, justifyContent: 'center', my: 0.5 }}>
-              {[65, 72, 68, 55, 48, 45, 42, 44, riskData.overall_risk].map((val, i) => (
+              {[65, 72, 68, 55, 48, 45, 42, 44, overallRiskScore].map((val, i) => (
                 <Box
                   key={i}
                   sx={{

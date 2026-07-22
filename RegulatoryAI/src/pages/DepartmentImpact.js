@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box, Container, Grid, Card, Typography, LinearProgress, Chip, Button, useTheme,
 } from '@mui/material';
@@ -19,6 +19,7 @@ const frameworkImpactMap = {
 export default function DepartmentImpact() {
   const theme = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [selectedFramework, setSelectedFramework] = useState(
     location.state?.framework || 'All'
@@ -36,7 +37,7 @@ export default function DepartmentImpact() {
       compliance: 89,
       risk: 'Medium',
       emissions: 12.5,
-      cost: '€0.8M',
+      penalty: '€0.8M',
       recommendation: 'Enhance AI model monitoring',
       color: 'warning',
     },
@@ -45,7 +46,7 @@ export default function DepartmentImpact() {
       compliance: 94,
       risk: 'Low',
       emissions: 8.2,
-      cost: '€0.4M',
+      penalty: '€0.4M',
       recommendation: 'Maintain current controls',
       color: 'success',
     },
@@ -54,7 +55,7 @@ export default function DepartmentImpact() {
       compliance: 85,
       risk: 'High',
       emissions: 10.3,
-      cost: '€1.1M',
+      penalty: '€1.1M',
       recommendation: 'Implement governance framework',
       color: 'error',
     },
@@ -190,13 +191,13 @@ export default function DepartmentImpact() {
                 </Typography>
               </Box>
 
-              {/* Estimated Cost */}
+              {/* Penalty */}
               <Box sx={{ mb: 3, pb: 3, borderBottom: `1px solid ${theme.palette.divider}` }}>
                 <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1 }}>
-                  Est. Implementation Cost
+                  Penalty
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: theme.palette[dept.color].main }}>
-                  {dept.cost}
+                <Typography sx={{ fontWeight: 700, color: theme.palette[dept.color].main, fontSize: '0.85rem' }}>
+                  {dept.penalty}
                 </Typography>
               </Box>
 
@@ -210,8 +211,12 @@ export default function DepartmentImpact() {
                 </Typography>
               </Box>
 
-              <Button fullWidth variant="outlined">
-                View Detailed Report
+              <Button 
+                fullWidth 
+                variant="outlined"
+                onClick={() => navigate('/approval', { state: { department: dept.name } })}
+              >
+                Recommendation
               </Button>
             </Card>
           </Grid>

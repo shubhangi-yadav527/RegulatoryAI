@@ -1,11 +1,23 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Box, Container, Grid, Card, Typography, useTheme,
+  Box, Container, Grid, Card, Typography, Chip, useTheme,
 } from '@mui/material';
 import { ProgressCard } from '../components/KPICards';
 
 export default function EnterpriseRiskDashboard() {
   const theme = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const filterRegulation = location.state?.regulation || null;
+
+  const REGULATION_RISKS_MAP = {
+    'EU AI Act': ['Model Risk', 'AI Explanation Risk', 'Compliance Risk'],
+    'DORA': ['Cyber Risk', 'Operational Risk'],
+    'GDPR': ['Cyber Risk', 'Compliance Risk'],
+    'Basel III': ['FSG Risk', 'Operational Risk']
+  };
 
   const riskCategories = [
     { label: 'Compliance Risk', percentage: 28, color: 'error' },
@@ -15,6 +27,29 @@ export default function EnterpriseRiskDashboard() {
     { label: 'Model Risk', percentage: 38, color: 'warning' },
     { label: 'AI Explanation Risk', percentage: 22, color: 'success' },
   ];
+
+  const filteredCategories = filterRegulation && REGULATION_RISKS_MAP[filterRegulation]
+    ? riskCategories.filter(c => REGULATION_RISKS_MAP[filterRegulation].includes(c.label))
+    : riskCategories;
+
+  const overallRiskScore = filteredCategories.length > 0
+    ? Math.round(filteredCategories.reduce((acc, curr) => acc + curr.percentage, 0) / filteredCategories.length)
+    : 0;
+
+  const getRiskLevelFromScore = (score) => {
+    if (score < 30) return 'Low';
+    if (score > 60) return 'High';
+    return 'Medium';
+  };
+
+  const overallRiskLevel = getRiskLevelFromScore(overallRiskScore);
+
+  const getRiskColor = (level) => {
+    const lvl = (level || '').toLowerCase();
+    if (lvl === 'low') return theme.palette.success.main;
+    if (lvl === 'high' || lvl === 'severe') return theme.palette.error.main;
+    return theme.palette.warning.main;
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -45,7 +80,7 @@ export default function EnterpriseRiskDashboard() {
                   width: 150,
                   height: 150,
                   borderRadius: '50%',
-                  background: `conic-gradient(${theme.palette.warning.main} 0deg 160deg, #E5E7EB 160deg 360deg)`,
+                  background: `conic-gradient(${getRiskColor(overallRiskLevel)} 0deg ${overallRiskScore * 3.6}deg, #E5E7EB ${overallRiskScore * 3.6}deg 360deg)`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -64,17 +99,17 @@ export default function EnterpriseRiskDashboard() {
                     flexDirection: 'column',
                   }}
                 >
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: 'warning.main' }}>
-                    44%
+                  <Typography variant="h4" sx={{ fontWeight: 700, color: `${overallRiskLevel.toLowerCase() === 'low' ? 'success' : overallRiskLevel.toLowerCase() === 'high' ? 'error' : 'warning'}.main` }}>
+                    {overallRiskScore}%
                   </Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    Medium
+                    {overallRiskLevel}
                   </Typography>
                 </Box>
               </Box>
             </Box>
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-              Based on 6 risk categories
+              Based on {filteredCategories.length} risk categories
             </Typography>
           </Card>
         </Grid>
@@ -82,11 +117,22 @@ export default function EnterpriseRiskDashboard() {
         {/* Risk Categories */}
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3, background: theme.palette.background.paper, color: '#E0E0E0' }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
-              Risk Category Breakdown
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Risk Category Breakdown {filterRegulation && `(${filterRegulation})`}
+              </Typography>
+              {filterRegulation && (
+                <Chip
+                  label="Clear"
+                  size="small"
+                  onDelete={() => navigate('/risks', { replace: true, state: {} })}
+                  color="primary"
+                  sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700 }}
+                />
+              )}
+            </Box>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-              {riskCategories.map((risk, idx) => (
+              {filteredCategories.map((risk, idx) => (
                 <ProgressCard
                   key={idx}
                   title={risk.label}
@@ -108,19 +154,19 @@ export default function EnterpriseRiskDashboard() {
               {[
                 {
                   title: 'Critical Issues',
-                  value: '3',
+                  value: filteredCategories.filter(c => c.color === 'error').length.toString(),
                   desc: 'Requiring immediate action',
                   color: 'error',
                 },
                 {
                   title: 'Medium Priority',
-                  value: '12',
+                  value: filteredCategories.filter(c => c.color === 'warning').length.toString(),
                   desc: 'Address within 30 days',
                   color: 'warning',
                 },
                 {
                   title: 'Low Priority',
-                  value: '28',
+                  value: filteredCategories.filter(c => c.color === 'success').length.toString(),
                   desc: 'Monitor and plan',
                   color: 'success',
                 },
@@ -163,7 +209,7 @@ export default function EnterpriseRiskDashboard() {
                 justifyContent: 'center',
               }}
             >
-              {[65, 72, 68, 55, 48, 45, 42, 44, 44].map((val, i) => (
+              {[65, 72, 68, 55, 48, 45, 42, 44, overallRiskScore].map((val, i) => (
                 <Box
                   key={i}
                   sx={{

@@ -96,18 +96,19 @@ export default function HomeDashboard() {
   }, []);
 
   return (
-    <Box sx={{ flexGrow: 1, height: '100%', pr: { xs: 0, md: 22 } }}>
+    <Box sx={{ flexGrow: 1, height: '100%', pr: { xs: 0, md: 5 } }}>
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
-          gridTemplateRows: { xs: 'auto', md: 'repeat(3, 1fr)' },
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+          gridTemplateRows: { xs: 'auto', sm: 'repeat(3, 1fr)' },
           gap: 2.5,
-          height: { xs: 'auto', md: 'calc(84vh - 120px)' },
-          minHeight: { xs: 'auto', md: '520px' }
+          maxWidth: '1060px',
+          height: { xs: 'auto', sm: 'calc(84vh - 120px)' },
+          minHeight: { xs: 'auto', sm: '520px' }
         }}
       >
-        {/* ROW 1: AI Governance, Enterprise Risk, Active Regulations */}
+        {/* ROW 1: AI Governance Score, Carbon Impact, AI Confidence */}
         {/* 1. AI Governance Score - Concept 3: Multi-Metric Shield & Bar Breakdown */}
         <Box sx={{ height: '100%' }}>
           <Card 
@@ -128,7 +129,7 @@ export default function HomeDashboard() {
                   AI Governance Score
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.75rem', lineHeight: 1 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.3rem', lineHeight: 1 }}>
                     {governanceScore.score}%
                   </Typography>
                   <Chip
@@ -199,7 +200,371 @@ export default function HomeDashboard() {
           </Card>
         </Box>
 
-        {/* 2. Enterprise Risk - Gauge only without risk categories */}
+        {/* 2. Carbon Impact */}
+        <Box sx={{ height: '100%' }}>
+          <Card 
+            className="glass-card" 
+            onClick={() => navigate('/esg')}
+            sx={{ 
+              p: 2, 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                borderColor: 'primary.main',
+                boxShadow: '0 8px 30px rgba(0, 24, 168, 0.08)'
+              },
+              transition: 'all 0.2s'
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
+                  Carbon Impact
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.3rem', lineHeight: 1 }}>
+                    {carbonImpact.current_co2}
+                  </Typography>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', fontSize: '0.7rem' }}>
+                    Tons CO₂
+                  </Typography>
+                  <Chip
+                    label={`↓ ${carbonImpact.reduction_percentage}%`}
+                    size="small"
+                    sx={{
+                      bgcolor: 'rgba(16, 185, 129, 0.12)',
+                      color: 'success.main',
+                      fontWeight: 700,
+                      fontSize: '0.62rem',
+                      height: 18,
+                      border: '1px solid rgba(16, 185, 129, 0.3)'
+                    }}
+                  />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '12px',
+                  bgcolor: 'rgba(45, 212, 191, 0.12)',
+                  border: '1px solid rgba(45, 212, 191, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Co2Icon sx={{ color: '#2DD4BF', fontSize: '1.5rem' }} />
+              </Box>
+            </Box>
+
+            {/* Tree Equivalent Chip & Green Auto-Scaling Bar */}
+            <Box sx={{ my: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.4 }}>
+                <Typography variant="caption" sx={{ fontWeight: 650, color: 'text.secondary', fontSize: '0.65rem' }}>
+                  🌲 2,054 Trees Saved Eq.
+                </Typography>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'success.main', fontSize: '0.65rem' }}>
+                  Target: 18.6T
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={carbonImpact.reduction_percentage}
+                sx={{
+                  height: 5,
+                  borderRadius: 2.5,
+                  bgcolor: 'rgba(0, 24, 168, 0.06)',
+                  '& .MuiLinearProgress-bar': {
+                    bgcolor: '#10B981',
+                    borderRadius: 2.5,
+                  }
+                }}
+              />
+            </Box>
+
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, display: 'block', lineHeight: 1.2, fontSize: '0.65rem' }}>
+              Green computing auto-scaling active on Loans & Core Banking servers.
+            </Typography>
+          </Card>
+        </Box>
+
+        {/* 3. AI Confidence */}
+        <Box sx={{ height: '100%' }}>
+          <Card 
+            className="glass-card" 
+            sx={{ 
+              p: 2, 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              transition: 'all 0.2s'
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
+                  AI Confidence
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.3rem', lineHeight: 1 }}>
+                    94.2%
+                  </Typography>
+                  <Chip
+                    label="Reliable Model"
+                    size="small"
+                    sx={{
+                      bgcolor: 'rgba(16, 185, 129, 0.12)',
+                      color: 'success.main',
+                      fontWeight: 700,
+                      fontSize: '0.62rem',
+                      height: 18,
+                      border: '1px solid rgba(16, 185, 129, 0.3)'
+                    }}
+                  />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '12px',
+                  bgcolor: 'rgba(0, 24, 168, 0.08)',
+                  border: '1px solid rgba(0, 24, 168, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <SpeedIcon sx={{ color: 'primary.main', fontSize: '1.4rem' }} />
+              </Box>
+            </Box>
+            
+            {/* Performance Stats Mini Breakdown */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 0.8, bgcolor: 'rgba(0, 24, 168, 0.02)', borderRadius: '6px', border: '1px solid rgba(0, 24, 168, 0.05)', my: 0.5 }}>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="caption" sx={{ fontSize: '0.58rem', color: 'text.secondary', display: 'block', fontWeight: 600 }}>Response</Typography>
+                <Typography variant="caption" sx={{ fontSize: '0.68rem', fontWeight: 700, color: 'primary.main' }}>124ms</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="caption" sx={{ fontSize: '0.58rem', color: 'text.secondary', display: 'block', fontWeight: 600 }}>Sync</Typography>
+                <Typography variant="caption" sx={{ fontSize: '0.68rem', fontWeight: 700, color: 'success.main' }}>Real-time</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="caption" sx={{ fontSize: '0.58rem', color: 'text.secondary', display: 'block', fontWeight: 600 }}>Uptime</Typography>
+                <Typography variant="caption" sx={{ fontSize: '0.68rem', fontWeight: 700, color: 'primary.main' }}>99.98%</Typography>
+              </Box>
+            </Box>
+
+            <LinearProgress
+              variant="determinate"
+              value={94.2}
+              sx={{
+                height: 4,
+                borderRadius: 2,
+                bgcolor: 'rgba(0, 24, 168, 0.06)',
+                '& .MuiLinearProgress-bar': {
+                  bgcolor: '#2DD4BF',
+                  borderRadius: 2,
+                }
+              }}
+            />
+          </Card>
+        </Box>
+
+        {/* ROW 2: Active Regulations, High Priority Alerts, Enterprise Risks */}
+        {/* 4. Active Regulations */}
+        <Box sx={{ height: '100%' }}>
+          <Card 
+            className="glass-card" 
+            onClick={() => navigate('/ai')}
+            sx={{ 
+              p: 2, 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                borderColor: 'primary.main',
+                boxShadow: '0 8px 30px rgba(0, 24, 168, 0.08)'
+              },
+              transition: 'all 0.2s'
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
+                  Active Regulations
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', mt: 0.3, mb: 0.2, fontSize: '1.3rem', lineHeight: 1 }}>
+                  {activeRegulations}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.65rem' }}>
+                  Active Governance Policies
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '12px',
+                  bgcolor: 'rgba(0, 24, 168, 0.08)',
+                  border: '1px solid rgba(0, 24, 168, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <FolderIcon sx={{ color: 'primary.main', fontSize: '1.3rem' }} />
+              </Box>
+            </Box>
+            
+            {/* Status Breakdown Pills */}
+            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', my: 1 }}>
+              <Chip
+                label="4 High Priority"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(239, 68, 68, 0.12)',
+                  color: 'error.main',
+                  fontWeight: 700,
+                  fontSize: '0.6rem',
+                  height: 18,
+                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                }}
+              />
+              <Chip
+                label="11 Compliant"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(16, 185, 129, 0.12)',
+                  color: 'success.main',
+                  fontWeight: 700,
+                  fontSize: '0.6rem',
+                  height: 18,
+                  border: '1px solid rgba(16, 185, 129, 0.3)'
+                }}
+              />
+              <Chip
+                label="3 Pending"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(245, 158, 11, 0.12)',
+                  color: 'warning.main',
+                  fontWeight: 700,
+                  fontSize: '0.6rem',
+                  height: 18,
+                  border: '1px solid rgba(245, 158, 11, 0.3)'
+                }}
+              />
+            </Box>
+
+            {/* Mini Roadmap Timeline */}
+            <Box sx={{ p: 0.8, bgcolor: 'rgba(0, 24, 168, 0.02)', borderRadius: '6px', border: '1px solid rgba(0, 24, 168, 0.05)' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="caption" sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'text.secondary' }}>
+                  Next Milestone:
+                </Typography>
+                <Typography variant="caption" sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'primary.main' }}>
+                  Q3 2026 EU AI Act
+                </Typography>
+              </Box>
+            </Box>
+          </Card>
+        </Box>
+
+        {/* 5. High Priority Alerts */}
+        <Box sx={{ height: '100%' }}>
+          <Card 
+            className="glass-card" 
+            onClick={() => navigate('/ai', { state: { filterSeverity: 'high' } })}
+            sx={{ 
+              p: 2, 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                borderColor: 'error.main',
+                boxShadow: '0 8px 30px rgba(239, 68, 68, 0.12)'
+              },
+              transition: 'all 0.2s'
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
+                  High Priority Alerts
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'error.main', mt: 0.3, mb: 0.2, fontSize: '1.3rem', lineHeight: 1 }}>
+                  {alerts.total_alerts}
+                </Typography>
+              </Box>
+              <Chip
+                label="4 Active"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(239, 68, 68, 0.15)',
+                  color: 'error.main',
+                  fontWeight: 700,
+                  fontSize: '0.62rem',
+                  height: 18,
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  animation: 'pulseAlert 2s infinite',
+                  '@keyframes pulseAlert': {
+                    '0%, 100%': { opacity: 1 },
+                    '50%': { opacity: 0.6 }
+                  }
+                }}
+              />
+            </Box>
+
+            {/* Alert List Items */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, my: 0.5 }}>
+              <Box 
+                sx={{ 
+                  p: 0.6, 
+                  bgcolor: 'rgba(239, 68, 68, 0.04)', 
+                  borderLeft: '3px solid #EF4444', 
+                  borderRadius: '0 6px 6px 0' 
+                }}
+              >
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'error.main', display: 'block', fontSize: '0.66rem' }}>
+                  🚨 Deposits Compliance Gap (85%)
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6rem', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  Action required by 2026-Q3
+                </Typography>
+              </Box>
+              <Box 
+                sx={{ 
+                  p: 0.6, 
+                  bgcolor: 'rgba(245, 158, 11, 0.04)', 
+                  borderLeft: '3px solid #F59E0B', 
+                  borderRadius: '0 6px 6px 0' 
+                }}
+              >
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'warning.main', display: 'block', fontSize: '0.66rem' }}>
+                  ⚖️ EU AI Act Enforcement
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6rem', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  Implementation plan pending
+                </Typography>
+              </Box>
+            </Box>
+          </Card>
+        </Box>
+
+        {/* 6. Enterprise Risk */}
         <Box sx={{ height: '100%' }}>
           <Card 
             className="glass-card" 
@@ -225,7 +590,7 @@ export default function HomeDashboard() {
                   Enterprise Risk
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'warning.main', fontSize: '1.75rem', lineHeight: 1 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'warning.main', fontSize: '1.3rem', lineHeight: 1 }}>
                     {riskData.overall_risk}%
                   </Typography>
                   <Chip
@@ -308,370 +673,6 @@ export default function HomeDashboard() {
           </Card>
         </Box>
 
-        {/* 3. Active Regulations - Option A: Status Badges + Milestone Roadmap */}
-        <Box sx={{ height: '100%' }}>
-          <Card 
-            className="glass-card" 
-            onClick={() => navigate('/ai')}
-            sx={{ 
-              p: 2, 
-              height: '100%', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                borderColor: 'primary.main',
-                boxShadow: '0 8px 30px rgba(0, 24, 168, 0.08)'
-              },
-              transition: 'all 0.2s'
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
-                  Active Regulations
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', mt: 0.3, mb: 0.2, fontSize: '1.75rem', lineHeight: 1 }}>
-                  {activeRegulations}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: '0.65rem' }}>
-                  Active Governance Policies
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '12px',
-                  bgcolor: 'rgba(0, 24, 168, 0.08)',
-                  border: '1px solid rgba(0, 24, 168, 0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <FolderIcon sx={{ color: 'primary.main', fontSize: '1.3rem' }} />
-              </Box>
-            </Box>
-            
-            {/* Status Breakdown Pills */}
-            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', my: 1 }}>
-              <Chip
-                label="4 High Priority"
-                size="small"
-                sx={{
-                  bgcolor: 'rgba(239, 68, 68, 0.12)',
-                  color: 'error.main',
-                  fontWeight: 700,
-                  fontSize: '0.6rem',
-                  height: 18,
-                  border: '1px solid rgba(239, 68, 68, 0.3)'
-                }}
-              />
-              <Chip
-                label="11 Compliant"
-                size="small"
-                sx={{
-                  bgcolor: 'rgba(16, 185, 129, 0.12)',
-                  color: 'success.main',
-                  fontWeight: 700,
-                  fontSize: '0.6rem',
-                  height: 18,
-                  border: '1px solid rgba(16, 185, 129, 0.3)'
-                }}
-              />
-              <Chip
-                label="3 Pending"
-                size="small"
-                sx={{
-                  bgcolor: 'rgba(245, 158, 11, 0.12)',
-                  color: 'warning.main',
-                  fontWeight: 700,
-                  fontSize: '0.6rem',
-                  height: 18,
-                  border: '1px solid rgba(245, 158, 11, 0.3)'
-                }}
-              />
-            </Box>
-
-            {/* Mini Roadmap Timeline */}
-            <Box sx={{ p: 0.8, bgcolor: 'rgba(0, 24, 168, 0.02)', borderRadius: '6px', border: '1px solid rgba(0, 24, 168, 0.05)' }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="caption" sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'text.secondary' }}>
-                  Next Milestone:
-                </Typography>
-                <Typography variant="caption" sx={{ fontSize: '0.6rem', fontWeight: 700, color: 'primary.main' }}>
-                  Q3 2026 EU AI Act
-                </Typography>
-              </Box>
-            </Box>
-          </Card>
-        </Box>
-
-        {/* ROW 2: Carbon Impact, High Priority Alerts, AI Confidence */}
-        {/* 4. Carbon Impact */}
-        <Box sx={{ height: '100%' }}>
-          <Card 
-            className="glass-card" 
-            onClick={() => navigate('/esg')}
-            sx={{ 
-              p: 2, 
-              height: '100%', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                borderColor: 'primary.main',
-                boxShadow: '0 8px 30px rgba(0, 24, 168, 0.08)'
-              },
-              transition: 'all 0.2s'
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
-                  Carbon Impact
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.75rem', lineHeight: 1 }}>
-                    {carbonImpact.current_co2}
-                  </Typography>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', fontSize: '0.7rem' }}>
-                    Tons CO₂
-                  </Typography>
-                  <Chip
-                    label={`↓ ${carbonImpact.reduction_percentage}%`}
-                    size="small"
-                    sx={{
-                      bgcolor: 'rgba(16, 185, 129, 0.12)',
-                      color: 'success.main',
-                      fontWeight: 700,
-                      fontSize: '0.62rem',
-                      height: 18,
-                      border: '1px solid rgba(16, 185, 129, 0.3)'
-                    }}
-                  />
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '12px',
-                  bgcolor: 'rgba(45, 212, 191, 0.12)',
-                  border: '1px solid rgba(45, 212, 191, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Co2Icon sx={{ color: '#2DD4BF', fontSize: '1.5rem' }} />
-              </Box>
-            </Box>
-
-            {/* Tree Equivalent Chip & Green Auto-Scaling Bar */}
-            <Box sx={{ my: 1 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.4 }}>
-                <Typography variant="caption" sx={{ fontWeight: 650, color: 'text.secondary', fontSize: '0.65rem' }}>
-                  🌲 2,054 Trees Saved Eq.
-                </Typography>
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'success.main', fontSize: '0.65rem' }}>
-                  Target: 18.6T
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={carbonImpact.reduction_percentage}
-                sx={{
-                  height: 5,
-                  borderRadius: 2.5,
-                  bgcolor: 'rgba(0, 24, 168, 0.06)',
-                  '& .MuiLinearProgress-bar': {
-                    bgcolor: '#10B981',
-                    borderRadius: 2.5,
-                  }
-                }}
-              />
-            </Box>
-
-            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, display: 'block', lineHeight: 1.2, fontSize: '0.65rem' }}>
-              Green computing auto-scaling active on Loans & Core Banking servers.
-            </Typography>
-          </Card>
-        </Box>
-
-        {/* 5. High Priority Alerts */}
-        <Box sx={{ height: '100%' }}>
-          <Card 
-            className="glass-card" 
-            onClick={() => navigate('/approval')}
-            sx={{ 
-              p: 2, 
-              height: '100%', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                borderColor: 'error.main',
-                boxShadow: '0 8px 30px rgba(239, 68, 68, 0.12)'
-              },
-              transition: 'all 0.2s'
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
-                  High Priority Alerts
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: 'error.main', mt: 0.3, mb: 0.2, fontSize: '1.75rem', lineHeight: 1 }}>
-                  {alerts.total_alerts}
-                </Typography>
-              </Box>
-              <Chip
-                label="4 Active"
-                size="small"
-                sx={{
-                  bgcolor: 'rgba(239, 68, 68, 0.15)',
-                  color: 'error.main',
-                  fontWeight: 700,
-                  fontSize: '0.62rem',
-                  height: 18,
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  animation: 'pulseAlert 2s infinite',
-                  '@keyframes pulseAlert': {
-                    '0%, 100%': { opacity: 1 },
-                    '50%': { opacity: 0.6 }
-                  }
-                }}
-              />
-            </Box>
-
-            {/* Alert List Items */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, my: 0.5 }}>
-              <Box 
-                sx={{ 
-                  p: 0.6, 
-                  bgcolor: 'rgba(239, 68, 68, 0.04)', 
-                  borderLeft: '3px solid #EF4444', 
-                  borderRadius: '0 6px 6px 0' 
-                }}
-              >
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'error.main', display: 'block', fontSize: '0.66rem' }}>
-                  🚨 Deposits Compliance Gap (85%)
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6rem', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  Action required by 2026-Q3
-                </Typography>
-              </Box>
-              <Box 
-                sx={{ 
-                  p: 0.6, 
-                  bgcolor: 'rgba(245, 158, 11, 0.04)', 
-                  borderLeft: '3px solid #F59E0B', 
-                  borderRadius: '0 6px 6px 0' 
-                }}
-              >
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'warning.main', display: 'block', fontSize: '0.66rem' }}>
-                  ⚖️ EU AI Act Enforcement
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6rem', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  Implementation plan pending
-                </Typography>
-              </Box>
-            </Box>
-          </Card>
-        </Box>
-
-        {/* 6. AI Confidence */}
-        <Box sx={{ height: '100%' }}>
-          <Card 
-            className="glass-card" 
-            sx={{ 
-              p: 2, 
-              height: '100%', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              justifyContent: 'space-between',
-              transition: 'all 0.2s'
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
-                  AI Confidence
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.75rem', lineHeight: 1 }}>
-                    94.2%
-                  </Typography>
-                  <Chip
-                    label="Reliable Model"
-                    size="small"
-                    sx={{
-                      bgcolor: 'rgba(16, 185, 129, 0.12)',
-                      color: 'success.main',
-                      fontWeight: 700,
-                      fontSize: '0.62rem',
-                      height: 18,
-                      border: '1px solid rgba(16, 185, 129, 0.3)'
-                    }}
-                  />
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '12px',
-                  bgcolor: 'rgba(0, 24, 168, 0.08)',
-                  border: '1px solid rgba(0, 24, 168, 0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <SpeedIcon sx={{ color: 'primary.main', fontSize: '1.4rem' }} />
-              </Box>
-            </Box>
-            
-            {/* Performance Stats Mini Breakdown */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 0.8, bgcolor: 'rgba(0, 24, 168, 0.02)', borderRadius: '6px', border: '1px solid rgba(0, 24, 168, 0.05)', my: 0.5 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="caption" sx={{ fontSize: '0.58rem', color: 'text.secondary', display: 'block', fontWeight: 600 }}>Response</Typography>
-                <Typography variant="caption" sx={{ fontSize: '0.68rem', fontWeight: 700, color: 'primary.main' }}>124ms</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="caption" sx={{ fontSize: '0.58rem', color: 'text.secondary', display: 'block', fontWeight: 600 }}>Sync</Typography>
-                <Typography variant="caption" sx={{ fontSize: '0.68rem', fontWeight: 700, color: 'success.main' }}>Real-time</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="caption" sx={{ fontSize: '0.58rem', color: 'text.secondary', display: 'block', fontWeight: 600 }}>Uptime</Typography>
-                <Typography variant="caption" sx={{ fontSize: '0.68rem', fontWeight: 700, color: 'primary.main' }}>99.98%</Typography>
-              </Box>
-            </Box>
-
-            <LinearProgress
-              variant="determinate"
-              value={94.2}
-              sx={{
-                height: 4,
-                borderRadius: 2,
-                bgcolor: 'rgba(0, 24, 168, 0.06)',
-                '& .MuiLinearProgress-bar': {
-                  bgcolor: '#2DD4BF',
-                  borderRadius: 2,
-                }
-              }}
-            />
-          </Card>
-        </Box>
-
         {/* ROW 3: Cost & ROI, Top 10 Insights, Current Newsletter */}
         {/* 7. Cost & ROI - Redesigned */}
         <Box sx={{ height: '100%' }}>
@@ -699,7 +700,7 @@ export default function HomeDashboard() {
                   Cost & ROI
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 0.3 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 800, color: '#6D28D9', fontSize: '1.75rem', lineHeight: 1 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: '#6D28D9', fontSize: '1.3rem', lineHeight: 1 }}>
                     {costRoi.annual_savings}
                   </Typography>
                   <Chip
@@ -832,7 +833,7 @@ export default function HomeDashboard() {
             </Box>
 
             {/* Scrollable Feed of Top 10 Insights */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, overflowY: 'auto', maxHeight: '115px', pr: 0.5, my: 0.5 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, overflowY: 'auto', maxHeight: '80px', pr: 0.5, my: 0.5 }}>
               {topInsights.map((insight, idx) => (
                 <Box
                   key={idx}
@@ -897,19 +898,20 @@ export default function HomeDashboard() {
               height: '100%', 
               display: 'flex', 
               flexDirection: 'column', 
-              justifyContent: 'space-between',
+              justifyContent: 'flex-start',
+              gap: 1.8,
               transition: 'all 0.2s'
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem' }}>
                 Newsletter
               </Typography>
               <Chip label={newsletter.date} size="small" variant="outlined" sx={{ fontWeight: 600, color: 'primary.main', borderColor: 'primary.main', height: 16, fontSize: '0.65rem' }} />
             </Box>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, overflowY: 'auto', maxHeight: '140px', pr: 0.5 }}>
-              {newsletter.updates.map((update, idx) => (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, overflow: 'hidden', pr: 0.5 }}>
+              {newsletter.updates.slice(0, 3).map((update, idx) => (
                 <Box 
                   key={idx}
                   sx={{ 

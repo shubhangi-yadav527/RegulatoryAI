@@ -15,8 +15,8 @@ export default function TopBar({ userName = 'Sarah' }) {
 
   const navItems = [
     { label: 'Home', path: '/' },
-    { label: 'Risks', path: '/risks' },
     { label: 'ESG', path: '/esg' },
+    { label: 'Risks', path: '/risks' },
     { label: 'AI', path: '/ai' },
     { label: 'Approval', path: '/approval' },
   ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box, Container, Grid, Card, Typography, Chip, Button, Badge, useTheme,
 } from '@mui/material';
@@ -9,7 +9,10 @@ import InfoIcon from '@mui/icons-material/Info';
 
 export default function RegulatoryIntelligence() {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
+
+  const filterSeverity = location.state?.filterSeverity || null;
 
   const regulations = [
     {
@@ -46,6 +49,10 @@ export default function RegulatoryIntelligence() {
     },
   ];
 
+  const filteredRegulations = filterSeverity
+    ? regulations.filter(r => r.severity.toLowerCase() === filterSeverity.toLowerCase())
+    : regulations;
+
   const getSeverityColor = (severity) => {
     const colors = {
       high: theme.palette.error.main,
@@ -81,9 +88,23 @@ export default function RegulatoryIntelligence() {
         {/* Timeline */}
         <Grid item xs={12} md={7}>
           <Card sx={{ p: 4, background: theme.palette.background.paper, color: '#E0E0E0' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Regulations Timeline {filterSeverity && `(${getSeverityLabel(filterSeverity)})`}
+              </Typography>
+              {filterSeverity && (
+                <Chip
+                  label="Clear"
+                  size="small"
+                  onDelete={() => navigate('/ai', { replace: true, state: {} })}
+                  color="primary"
+                  sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700 }}
+                />
+              )}
+            </Box>
             <Timeline position="alternate">
-              {regulations.map((reg, idx) => (
-                <TimelineItem key={idx}>
+              {filteredRegulations.map((reg, idx) => (
+                <TimelineItem key={idx} position={idx % 2 === 0 ? 'left' : 'right'}>
                   <TimelineOppositeContent color="textSecondary">
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
                       {reg.date}
@@ -97,7 +118,7 @@ export default function RegulatoryIntelligence() {
                         height: 16,
                       }}
                     />
-                    {idx < regulations.length - 1 && <TimelineConnector />}
+                    {idx < filteredRegulations.length - 1 && <TimelineConnector />}
                   </TimelineSeparator>
                   <TimelineContent sx={{ pb: 3 }}>
                     <Card
@@ -152,7 +173,7 @@ export default function RegulatoryIntelligence() {
         {/* Summary Cards */}
         <Grid item xs={12} md={5}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {regulations.slice(0, 2).map((reg, idx) => (
+            {filteredRegulations.map((reg, idx) => (
               <Card key={idx} sx={{ p: 2.5, background: theme.palette.background.paper, color: '#E0E0E0' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
@@ -178,7 +199,22 @@ export default function RegulatoryIntelligence() {
                       label={action}
                       size="small"
                       variant="outlined"
-                      sx={{ fontSize: '0.75rem' }}
+                      onClick={action === 'Review Risk' ? () => navigate('/risks', { state: { regulation: reg.name } }) : undefined}
+                      sx={{ 
+                        fontSize: '0.75rem',
+                        cursor: action === 'Review Risk' ? 'pointer' : 'default',
+                        ...(action === 'Review Risk' && {
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          fontWeight: 700,
+                          bgcolor: 'rgba(0, 24, 168, 0.02)',
+                          '&:hover': {
+                            bgcolor: 'rgba(0, 0, 0, 0.08)',
+                            borderColor: 'rgba(0, 0, 0, 0.2)',
+                            color: 'text.primary'
+                          }
+                        })
+                      }}
                     />
                   ))}
                 </Box>

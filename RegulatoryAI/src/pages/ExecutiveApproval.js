@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box, Container, Grid, Card, Typography, Button, Dialog, DialogTitle,
   DialogContent, DialogActions, Chip, useTheme, Table, TableBody,
@@ -10,14 +11,18 @@ import InfoIcon from '@mui/icons-material/Info';
 
 export default function ExecutiveApproval() {
   const theme = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const filterDepartment = location.state?.department || null;
 
   const approvalItems = [
     {
       id: 1,
       title: 'EU AI Act Compliance Framework',
-      department: 'Risk Management',
+      department: 'Loans',
       risk: 'High',
       cost: '€0.8M',
       savings: '€0.4M',
@@ -30,7 +35,7 @@ export default function ExecutiveApproval() {
     {
       id: 2,
       title: 'Automated Compliance Reporting',
-      department: 'Compliance',
+      department: 'Core Banking',
       risk: 'Medium',
       cost: '€0.4M',
       savings: '€0.6M',
@@ -43,7 +48,7 @@ export default function ExecutiveApproval() {
     {
       id: 3,
       title: 'Data Center Energy Optimization',
-      department: 'Operations',
+      department: 'Deposits',
       risk: 'Low',
       cost: '€0.2M',
       savings: '€0.3M',
@@ -53,7 +58,74 @@ export default function ExecutiveApproval() {
       description: 'Implement AI-driven optimization of data center operations.',
       actions: ['Assessment', 'Implementation', 'Monitoring'],
     },
+    {
+      id: 4,
+      title: 'Risk-weighted Asset Modeling',
+      department: 'Treasury',
+      risk: 'High',
+      cost: '€0.9M',
+      savings: '€0.5M',
+      timeline: '10 weeks',
+      carbonReduction: '1.2 Tons CO₂',
+      status: 'Pending',
+      description: 'Optimize treasury capital buffers and risk-weighted asset modeling under Basel III rules.',
+      actions: ['Model Development', 'Validation', 'Stress Testing'],
+    },
+    {
+      id: 5,
+      title: 'Digital Resiliency (DORA) Framework',
+      department: 'Cyber Security',
+      risk: 'High',
+      cost: '€0.6M',
+      savings: '€0.3M',
+      timeline: '8 weeks',
+      carbonReduction: '0.8 Tons CO₂',
+      status: 'Pending',
+      description: 'Upgrade network segmentation and ICT operational resilience to comply with DORA rules.',
+      actions: ['Vulnerability Scan', 'Resilience Plan', 'Testing'],
+    },
+    {
+      id: 6,
+      title: 'AML Transaction Auditing Automation',
+      department: 'Payments',
+      risk: 'Medium',
+      cost: '€0.5M',
+      savings: '€0.3M',
+      timeline: '6 weeks',
+      carbonReduction: '1.0 Tons CO₂',
+      status: 'Pending',
+      description: 'Automate anti-money laundering auditing workflows for cross-border transaction compliance.',
+      actions: ['Audit Integration', 'Compliance Review'],
+    }
   ];
+
+  const filteredApprovalItems = filterDepartment
+    ? approvalItems.filter(item => item.department.toLowerCase() === filterDepartment.toLowerCase())
+    : approvalItems;
+
+  const calculateTotalCost = (items) => {
+    const sum = items.reduce((acc, curr) => {
+      const num = parseFloat(curr.cost.replace(/[^0-9.]/g, ''));
+      return acc + (isNaN(num) ? 0 : num);
+    }, 0);
+    return `€${sum.toFixed(1)}M`;
+  };
+
+  const calculateTotalSavings = (items) => {
+    const sum = items.reduce((acc, curr) => {
+      const num = parseFloat(curr.savings.replace(/[^0-9.]/g, ''));
+      return acc + (isNaN(num) ? 0 : num);
+    }, 0);
+    return `€${sum.toFixed(1)}M`;
+  };
+
+  const calculateTotalCarbon = (items) => {
+    const sum = items.reduce((acc, curr) => {
+      const num = parseFloat(curr.carbonReduction.replace(/[^0-9.]/g, ''));
+      return acc + (isNaN(num) ? 0 : num);
+    }, 0);
+    return `${sum.toFixed(1)} T`;
+  };
 
   const getRiskColor = (risk) => {
     const colors = {
@@ -98,7 +170,7 @@ export default function ExecutiveApproval() {
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'warning.50' }}>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'warning.main', mb: 1 }}>
-              {approvalItems.length}
+              {filteredApprovalItems.length}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Pending Approvals
@@ -108,7 +180,7 @@ export default function ExecutiveApproval() {
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'error.50' }}>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'error.main', mb: 1 }}>
-              €1.4M
+              {calculateTotalCost(filteredApprovalItems)}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Total Investment
@@ -118,7 +190,7 @@ export default function ExecutiveApproval() {
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'success.50' }}>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'success.main', mb: 1 }}>
-              €1.3M
+              {calculateTotalSavings(filteredApprovalItems)}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Total Savings
@@ -128,7 +200,7 @@ export default function ExecutiveApproval() {
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ p: 3, textAlign: 'center', bgcolor: 'secondary.50' }}>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'secondary.main', mb: 1 }}>
-              7.1 T
+              {calculateTotalCarbon(filteredApprovalItems)}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               CO₂ Reduction
@@ -139,6 +211,20 @@ export default function ExecutiveApproval() {
         {/* Approval Items */}
         <Grid item xs={12}>
           <TableContainer component={Card}>
+            {filterDepartment && (
+              <Box sx={{ p: 2, borderBottom: '1px solid rgba(0, 0, 0, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'rgba(0, 0, 0, 0.02)' }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.secondary' }}>
+                  Showing recommendations for: <strong>{filterDepartment}</strong> department
+                </Typography>
+                <Chip
+                  label="Clear"
+                  size="small"
+                  onDelete={() => navigate('/approval', { replace: true, state: {} })}
+                  color="primary"
+                  sx={{ height: 22, fontSize: '0.7rem', fontWeight: 700 }}
+                />
+              </Box>
+            )}
             <Table>
               <TableHead>
                 <TableRow sx={{ bgcolor: 'primary.50' }}>
@@ -160,7 +246,7 @@ export default function ExecutiveApproval() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {approvalItems.map((item) => (
+                {filteredApprovalItems.map((item) => (
                   <TableRow key={item.id} sx={{ '&:hover': { bgcolor: '#F9FAFB' } }}>
                     <TableCell>
                       <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>

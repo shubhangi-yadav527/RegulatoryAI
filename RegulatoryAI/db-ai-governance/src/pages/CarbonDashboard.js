@@ -27,12 +27,13 @@ export default function CarbonDashboard() {
   const COLORS = [theme.palette.success.main, theme.palette.secondary.main, theme.palette.success.light];
 
   return (
-    <Box sx={{ height: '100%', pr: { xs: 0, md: 22 } }}>
+    <Box sx={{ height: '100%', pr: { xs: 0, md: 5 } }}>
       <Box
         sx={{
           display: 'grid',
           gridTemplateRows: { xs: 'auto', md: 'auto 1fr 1fr' },
           gap: 2,
+          maxWidth: '1060px',
           height: { xs: 'auto', md: 'calc(84vh - 120px)' },
           minHeight: { xs: 'auto', md: '520px' }
         }}

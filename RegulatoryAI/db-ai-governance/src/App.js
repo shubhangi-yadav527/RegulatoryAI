@@ -344,12 +344,12 @@ function AppLayout() {
 
   const navItems = [
     { label: 'Home', path: '/', icon: HomeIcon },
+    { label: 'Carbon Footprint', path: '/esg', icon: ForestIcon },
     { label: 'Risks', path: '/risks', icon: GridViewIcon },
     { label: 'Regulations', path: '/ai', icon: FolderIcon },
-    { label: 'Carbon Footprint', path: '/esg', icon: ForestIcon },
     { label: 'Departments', path: '/departments', icon: BusinessIcon },
+    { label: 'Recommendations', path: '/approval', icon: CheckCircleIcon },
     { label: 'Cost & ROI', path: '/roi', icon: MonetizationOnIcon },
-    { label: 'Approvals', path: '/approval', icon: CheckCircleIcon },
   ];
 
   const getPageTitle = () => {
@@ -361,9 +361,9 @@ function AppLayout() {
       case '/esg':
         return 'Carbon & Sustainability Dashboard';
       case '/ai':
-        return 'Regulatory Intelligence Timeline';
+        return 'Regulatory Intelligence Hub';
       case '/approval':
-        return 'Executive Governance Approvals';
+        return 'Governance Recommendations';
       case '/departments':
         return 'Department Compliance Metrics';
       case '/roi':
@@ -398,14 +398,14 @@ function AppLayout() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', py: { xs: 2, md: 4 }, px: { xs: 1, md: 4 }, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Box sx={{ minHeight: '100vh', py: { xs: 1, md: 2 }, px: { xs: 0.5, md: 1.5 }, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       {/* Frosted Glass Container Board */}
       <Box 
         className="glass-container"
         sx={{ 
           width: '100%', 
-          maxWidth: '1440px', 
-          minHeight: '85vh',
+          maxWidth: '1560px', 
+          minHeight: '88vh',
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           overflow: 'hidden',
@@ -416,13 +416,13 @@ function AppLayout() {
         <Box
           className="glass-sidebar"
           sx={{
-            width: { xs: '100%', md: '160px' },
+            width: { xs: '100%', md: '210px' },
             display: 'flex',
             flexDirection: { xs: 'row', md: 'column' },
             justifyContent: 'space-between',
             alignItems: 'center',
-            py: { xs: 1.5, md: 3 },
-            px: { xs: 2, md: 0 },
+            py: { xs: 1.5, md: 2.5 },
+            px: 0,
             borderBottom: { xs: '1px solid rgba(255, 255, 255, 0.3)', md: 'none' }
           }}
         >
@@ -495,7 +495,7 @@ function AppLayout() {
                 gap: 0.8,
                 width: '100%',
                 alignItems: { xs: 'center', md: 'stretch' },
-                px: { xs: 0, md: 1.5 }
+                px: { xs: 0, md: 2 }
               }}
             >
               {navItems.map((item) => {
@@ -510,7 +510,7 @@ function AppLayout() {
                         alignItems: 'center',
                         gap: 1.5,
                         height: 38,
-                        px: { xs: 1.5, md: 2 },
+                        px: 2,
                         borderRadius: '8px',
                         bgcolor: active ? 'primary.main' : 'transparent',
                         color: active ? 'white' : 'text.secondary',
@@ -531,6 +531,7 @@ function AppLayout() {
                           fontSize: '0.8rem',
                           display: { xs: 'none', md: 'block' },
                           letterSpacing: '-0.01em',
+                          whiteSpace: 'nowrap',
                         }}
                       >
                         {item.label}
@@ -546,7 +547,7 @@ function AppLayout() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
 
           {/* Bottom Settings & Logout */}
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, px: 2, mt: { xs: 0, md: 2 } }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5, justifyContent: 'center', width: '100%', mb: { xs: 0, md: 2 } }}>
             <IconButton sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }}>
               <SettingsIcon sx={{ fontSize: '1.2rem' }} />
             </IconButton>
@@ -682,141 +683,151 @@ function AppLayout() {
         )}
       </Box>
 
-      {/* Sliding Glassmorphic Chat Drawer */}
-      <Drawer
-        anchor="right"
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-        PaperProps={{
-          sx: {
-            width: { xs: '100%', sm: 380 },
-            background: 'rgba(255, 255, 255, 0.75)',
+      {/* Floating Glassmorphic Chat Pane */}
+      {chatOpen && (
+        <Paper
+          className="glass-card"
+          sx={{
+            position: 'fixed',
+            width: { xs: 'calc(100% - 40px)', sm: 310 },
+            height: '50vh',
+            bottom: 85,
+            right: { xs: 20, sm: 30 },
+            borderRadius: '24px',
+            background: 'rgba(255, 255, 255, 0.82)',
             backdropFilter: 'blur(25px)',
             WebkitBackdropFilter: 'blur(25px)',
-            borderLeft: '1px solid rgba(255, 255, 255, 0.5)',
-            boxShadow: '-10px 0 40px rgba(0,0,0,0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.5)',
+            boxShadow: '0 12px 40px rgba(0, 24, 168, 0.12)',
             display: 'flex',
             flexDirection: 'column',
-            p: 3
-          }
-        }}
-      >
-        {/* Chat Drawer Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <ZehnBotAvatar size={40} floating={false} />
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main', lineHeight: 1.2 }}>
-                ZehnBot
-              </Typography>
-              <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 600 }}>
-                ● Active Governance Agent
-              </Typography>
-            </Box>
-          </Box>
-          <IconButton onClick={() => setChatOpen(false)} sx={{ bgcolor: 'rgba(255,255,255,0.6)' }}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-
-        {/* Chat Log */}
-        <Box 
-          sx={{ 
-            flexGrow: 1, 
-            overflowY: 'auto', 
-            mb: 3, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: 2,
-            pr: 1
+            p: 3,
+            zIndex: 1300,
+            animation: 'slideUpChat 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '@keyframes slideUpChat': {
+              from: { transform: 'translateY(20px)', opacity: 0 },
+              to: { transform: 'translateY(0)', opacity: 1 }
+            }
           }}
         >
-          {chat.map((msg, index) => {
-            const isUser = msg.sender === 'user';
-            return (
-              <Box 
-                key={index}
-                sx={{ 
-                  display: 'flex', 
-                  justifyContent: isUser ? 'flex-end' : 'flex-start',
-                  width: '100%' 
-                }}
-              >
-                <Paper
-                  sx={{
-                    p: 2,
-                    borderRadius: isUser ? '16px 16px 0 16px' : '16px 16px 16px 0',
-                    bgcolor: isUser ? 'primary.main' : 'rgba(255,255,255,0.85)',
-                    color: isUser ? 'white' : 'text.primary',
-                    border: isUser ? 'none' : '1px solid rgba(255,255,255,0.5)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-                    maxWidth: '85%'
-                  }}
-                >
-                  <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.4 }}>
-                    {msg.text}
-                  </Typography>
-
-                  {/* Recommendation action chips in bot messages */}
-                  {msg.metadata && msg.metadata.actions && (
-                    <Box sx={{ mt: 1.5, display: 'flex', flexWrap: 'wrap', gap: 0.8 }}>
-                      {msg.metadata.actions.map((act, i) => (
-                        <Box
-                          key={i}
-                          sx={{
-                            px: 1,
-                            py: 0.5,
-                            borderRadius: '4px',
-                            border: isUser ? '1px solid rgba(255,255,255,0.6)' : '1px solid rgba(0, 24, 168, 0.4)',
-                            fontSize: '0.7rem',
-                            fontWeight: 600,
-                            color: isUser ? 'white' : 'primary.main',
-                            bgcolor: isUser ? 'transparent' : 'rgba(0, 24, 168, 0.04)'
-                          }}
-                        >
-                          {act}
-                        </Box>
-                      ))}
-                    </Box>
-                  )}
-                </Paper>
+          {/* Chat Pane Header */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <ZehnBotAvatar size={36} floating={false} />
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main', lineHeight: 1.2, fontSize: '0.95rem' }}>
+                  ZehnBot
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 600, fontSize: '0.65rem' }}>
+                  ● Active Governance Agent
+                </Typography>
               </Box>
-            );
-          })}
-        </Box>
+            </Box>
+            <IconButton onClick={() => setChatOpen(false)} sx={{ bgcolor: 'rgba(255,255,255,0.6)', p: 0.5 }}>
+              <CloseIcon sx={{ fontSize: '1.1rem' }} />
+            </IconButton>
+          </Box>
 
-        {/* Input Bar */}
-        <Box sx={{ display: 'flex', gap: 1.5 }}>
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="Ask ZehnBot..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '12px',
-                bgcolor: 'rgba(255,255,255,0.6)',
-              }
-            }}
-          />
-          <IconButton 
-            color="primary"
-            onClick={handleSendMessage}
+          {/* Chat Log */}
+          <Box 
             sx={{ 
-              bgcolor: 'primary.main', 
-              color: 'white',
-              '&:hover': { bgcolor: 'primary.dark' },
-              width: 40,
-              height: 40,
-              borderRadius: '12px'
+              flexGrow: 1, 
+              overflowY: 'auto', 
+              mb: 2, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 1.5,
+              pr: 1
             }}
           >
-            <SendIcon sx={{ fontSize: '1.2rem' }} />
-          </IconButton>
-        </Box>
-      </Drawer>
+            {chat.map((msg, index) => {
+              const isUser = msg.sender === 'user';
+              return (
+                <Box 
+                  key={index}
+                  sx={{ 
+                    display: 'flex', 
+                    justifyContent: isUser ? 'flex-end' : 'flex-start',
+                    width: '100%' 
+                  }}
+                >
+                  <Paper
+                    sx={{
+                      p: 1.5,
+                      borderRadius: isUser ? '14px 14px 0 14px' : '14px 14px 14px 0',
+                      bgcolor: isUser ? 'primary.main' : 'rgba(255,255,255,0.85)',
+                      color: isUser ? 'white' : 'text.primary',
+                      border: isUser ? 'none' : '1px solid rgba(255,255,255,0.5)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                      maxWidth: '85%'
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.35, fontSize: '0.75rem' }}>
+                      {msg.text}
+                    </Typography>
+
+                    {/* Recommendation action chips in bot messages */}
+                    {msg.metadata && msg.metadata.actions && (
+                      <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.6 }}>
+                        {msg.metadata.actions.map((act, i) => (
+                          <Box
+                            key={i}
+                            sx={{
+                              px: 0.8,
+                              py: 0.3,
+                              borderRadius: '4px',
+                              border: isUser ? '1px solid rgba(255,255,255,0.6)' : '1px solid rgba(0, 24, 168, 0.4)',
+                              fontSize: '0.62rem',
+                              fontWeight: 600,
+                              color: isUser ? 'white' : 'primary.main',
+                              bgcolor: isUser ? 'transparent' : 'rgba(0, 24, 168, 0.04)'
+                            }}
+                          >
+                            {act}
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
+                  </Paper>
+                </Box>
+              );
+            })}
+          </Box>
+
+          {/* Input Bar */}
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="Ask ZehnBot..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px',
+                  bgcolor: 'rgba(255,255,255,0.6)',
+                  fontSize: '0.75rem'
+                }
+              }}
+            />
+            <IconButton 
+              color="primary"
+              onClick={handleSendMessage}
+              sx={{ 
+                bgcolor: 'primary.main', 
+                color: 'white',
+                '&:hover': { bgcolor: 'primary.dark' },
+                width: 36,
+                height: 36,
+                borderRadius: '10px'
+              }}
+            >
+              <SendIcon sx={{ fontSize: '1rem' }} />
+            </IconButton>
+          </Box>
+        </Paper>
+      )}
     </Box>
   );
 }

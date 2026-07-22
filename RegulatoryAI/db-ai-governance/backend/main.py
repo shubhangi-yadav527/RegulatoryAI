@@ -132,6 +132,7 @@ db_departments = [
         "risk": "Medium",
         "emissions": 12.5,
         "cost": "€0.8M",
+        "penalty": "€0.8M",
         "recommendation": "Enhance AI model monitoring & credit scoring oversight",
         "source": "BigQuery"
     },
@@ -141,6 +142,7 @@ db_departments = [
         "risk": "Low",
         "emissions": 8.2,
         "cost": "€0.4M",
+        "penalty": "€0.4M",
         "recommendation": "Maintain operational resilience controls",
         "source": "BigQuery"
     },
@@ -150,6 +152,7 @@ db_departments = [
         "risk": "High",
         "emissions": 10.3,
         "cost": "€1.1M",
+        "penalty": "€1.1M",
         "recommendation": "Implement cloud vendor risk governance framework",
         "source": "BigQuery"
     },
@@ -159,6 +162,7 @@ db_departments = [
         "risk": "High",
         "emissions": 9.1,
         "cost": "€0.9M",
+        "penalty": "€0.9M",
         "recommendation": "Risk-weighted capital buffers & liquidity stress testing",
         "source": "BigQuery"
     },
@@ -168,6 +172,7 @@ db_departments = [
         "risk": "Medium",
         "emissions": 6.8,
         "cost": "€0.6M",
+        "penalty": "€0.6M",
         "recommendation": "ICT resilience, incident reporting & vendor oversight",
         "source": "BigQuery"
     },
@@ -177,6 +182,7 @@ db_departments = [
         "risk": "Medium",
         "emissions": 7.2,
         "cost": "€0.5M",
+        "penalty": "€0.5M",
         "recommendation": "AML transaction monitoring & outsourcing oversight",
         "source": "BigQuery"
     }
@@ -388,7 +394,7 @@ async def get_regulation(regulation_id: str):
 async def get_departments():
     """Get all departments with metrics"""
     if BQ_TABLE == "eu_regulations":
-        query = f"SELECT DepartmentImpacted, AVG(AIGovernanceScore) as avg_score, MAX(RegulatorySeverity) as max_severity, STRING_AGG(Regulations, ', ') as regs FROM `{BQ_PROJECT}.{BQ_DATASET}.{BQ_TABLE}` GROUP BY DepartmentImpacted"
+        query = f"SELECT DepartmentImpacted, AVG(AIGovernanceScore) as avg_score, MAX(RegulatorySeverity) as max_severity, MAX(PenaltyRange) as max_penalty, STRING_AGG(Regulations, ', ') as regs FROM `{BQ_PROJECT}.{BQ_DATASET}.{BQ_TABLE}` GROUP BY DepartmentImpacted"
         res = query_bigquery(query, None)
         if res:
             depts = []
@@ -399,7 +405,9 @@ async def get_departments():
                 risk = "High" if "High" in sev or "Very High" in sev else "Medium" if "Medium" in sev else "Low"
                 
                 emissions = 12.5 if name == "Loans" else 8.2 if name == "Core Banking" else 10.3 if name == "Deposits" else 6.4
-                cost = "€0.8M" if name == "Loans" else "€0.4M" if name == "Core Banking" else "€1.1M" if name == "Deposits" else "€0.3M"
+                penalty = row.get("max_penalty")
+                if not penalty or penalty == "N/A":
+                    penalty = "€0.8M" if name == "Loans" else "€0.4M" if name == "Core Banking" else "€1.1M" if name == "Deposits" else "€0.3M"
                 recommendation = f"Ensure alignment with {row.get('regs', '')[:50]}"
                 
                 depts.append({
@@ -407,7 +415,8 @@ async def get_departments():
                     "compliance": compliance,
                     "risk": risk,
                     "emissions": emissions,
-                    "cost": cost,
+                    "cost": penalty,
+                    "penalty": penalty,
                     "recommendation": recommendation
                 })
             return {"departments": depts}
@@ -415,6 +424,8 @@ async def get_departments():
         query = f"SELECT name, compliance, risk, emissions, cost, recommendation FROM `{BQ_PROJECT}.{BQ_DATASET}.departments`" if BQ_PROJECT else f"SELECT name, compliance, risk, emissions, cost, recommendation FROM `{BQ_PROJECT}.{BQ_DATASET}.departments`"
         res = query_bigquery(query, None)
         if res:
+            for row in res:
+                row["penalty"] = row.get("cost", "N/A")
             return {"departments": res}
     return {"departments": db_departments}
 
@@ -422,7 +433,7 @@ async def get_departments():
 async def get_department(dept_id: str):
     """Get specific department details"""
     if BQ_TABLE == "eu_regulations":
-        query = f"SELECT DepartmentImpacted, AVG(AIGovernanceScore) as avg_score, MAX(RegulatorySeverity) as max_severity, STRING_AGG(Regulations, ', ') as regs FROM `{BQ_PROJECT}.{BQ_DATASET}.{BQ_TABLE}` WHERE LOWER(DepartmentImpacted) = '{dept_id.lower()}' GROUP BY DepartmentImpacted"
+        query = f"SELECT DepartmentImpacted, AVG(AIGovernanceScore) as avg_score, MAX(RegulatorySeverity) as max_severity, MAX(PenaltyRange) as max_penalty, STRING_AGG(Regulations, ', ') as regs FROM `{BQ_PROJECT}.{BQ_DATASET}.{BQ_TABLE}` WHERE LOWER(DepartmentImpacted) = '{dept_id.lower()}' GROUP BY DepartmentImpacted"
         res = query_bigquery(query, None)
         if res:
             row = res[0]
@@ -432,7 +443,9 @@ async def get_department(dept_id: str):
             risk = "High" if "High" in sev or "Very High" in sev else "Medium" if "Medium" in sev else "Low"
             
             emissions = 12.5 if name == "Loans" else 8.2 if name == "Core Banking" else 10.3 if name == "Deposits" else 6.4
-            cost = "€0.8M" if name == "Loans" else "€0.4M" if name == "Core Banking" else "€1.1M" if name == "Deposits" else "€0.3M"
+            penalty = row.get("max_penalty")
+            if not penalty or penalty == "N/A":
+                penalty = "€0.8M" if name == "Loans" else "€0.4M" if name == "Core Banking" else "€1.1M" if name == "Deposits" else "€0.3M"
             recommendation = f"Ensure alignment with {row.get('regs', '')[:50]}"
             
             return {
@@ -441,7 +454,8 @@ async def get_department(dept_id: str):
                     "compliance": compliance,
                     "risk": risk,
                     "emissions": emissions,
-                    "cost": cost,
+                    "cost": penalty,
+                    "penalty": penalty,
                     "recommendation": recommendation
                 }
             }

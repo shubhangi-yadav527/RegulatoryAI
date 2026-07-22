@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box, Card, Typography, LinearProgress, Chip, Button, useTheme,
 } from '@mui/material';
@@ -31,6 +31,7 @@ const resolveFrameworkKey = (fwName) => {
 export default function DepartmentImpact() {
   const theme = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [selectedFramework, setSelectedFramework] = useState(
     resolveFrameworkKey(location.state?.framework || 'All')
@@ -48,7 +49,7 @@ export default function DepartmentImpact() {
       compliance: 89,
       risk: 'Medium',
       emissions: 12.5,
-      cost: '€0.8M',
+      penalty: '€0.8M',
       recommendation: 'Enhance AI model monitoring & credit scoring oversight',
       source: 'BigQuery'
     },
@@ -57,7 +58,7 @@ export default function DepartmentImpact() {
       compliance: 94,
       risk: 'Low',
       emissions: 8.2,
-      cost: '€0.4M',
+      penalty: '€0.4M',
       recommendation: 'Maintain operational resilience controls',
       source: 'BigQuery'
     },
@@ -66,7 +67,7 @@ export default function DepartmentImpact() {
       compliance: 85,
       risk: 'High',
       emissions: 10.3,
-      cost: '€1.1M',
+      penalty: '€1.1M',
       recommendation: 'Implement cloud vendor risk governance framework',
       source: 'BigQuery'
     },
@@ -75,7 +76,7 @@ export default function DepartmentImpact() {
       compliance: 88,
       risk: 'High',
       emissions: 9.1,
-      cost: '€0.9M',
+      penalty: '€0.9M',
       recommendation: 'Risk-weighted capital buffers & liquidity stress testing',
       source: 'BigQuery'
     },
@@ -84,7 +85,7 @@ export default function DepartmentImpact() {
       compliance: 90,
       risk: 'Medium',
       emissions: 6.8,
-      cost: '€0.6M',
+      penalty: '€0.6M',
       recommendation: 'ICT resilience, incident reporting & vendor oversight',
       source: 'BigQuery'
     },
@@ -93,7 +94,7 @@ export default function DepartmentImpact() {
       compliance: 90,
       risk: 'Medium',
       emissions: 7.2,
-      cost: '€0.5M',
+      penalty: '€0.5M',
       recommendation: 'AML transaction monitoring & outsourcing oversight',
       source: 'BigQuery'
     }
@@ -146,12 +147,13 @@ export default function DepartmentImpact() {
   const highCount = filteredDepartments.filter(d => (d.risk || '').toLowerCase() === 'high' || (d.risk || '').toLowerCase() === 'severe').length;
 
   return (
-    <Box sx={{ height: '100%', pr: { xs: 0, md: 22 } }}>
+    <Box sx={{ height: '100%', pr: { xs: 0, md: 5 } }}>
       <Box
         sx={{
           display: 'grid',
           gridTemplateRows: { xs: 'auto', md: '1fr auto' },
           gap: 2.5,
+          maxWidth: '1060px',
           height: { xs: 'auto', md: 'calc(84vh - 120px)' },
           minHeight: { xs: 'auto', md: '520px' }
         }}
@@ -275,9 +277,9 @@ export default function DepartmentImpact() {
                     </Typography>
                   </Box>
                   <Box>
-                    <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.68rem', display: 'block' }}>Cost</Typography>
-                    <Typography sx={{ fontWeight: 750, color: getRiskColor(dept.risk), fontSize: '0.85rem', mt: 0.2 }}>
-                      {dept.cost}
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.68rem', display: 'block' }}>Penalty</Typography>
+                    <Typography sx={{ fontWeight: 750, color: getRiskColor(dept.risk), fontSize: '0.72rem', mt: 0.2 }}>
+                      {dept.penalty}
                     </Typography>
                   </Box>
                 </Box>
@@ -292,8 +294,14 @@ export default function DepartmentImpact() {
                   </Typography>
                 </Box>
 
-                <Button fullWidth variant="outlined" size="small" sx={{ py: 0.15, fontSize: '0.72rem', minHeight: 24 }}>
-                  Detailed Report
+                <Button 
+                  fullWidth 
+                  variant="outlined" 
+                  size="small" 
+                  onClick={() => navigate('/approval', { state: { department: dept.name } })}
+                  sx={{ py: 0.15, fontSize: '0.72rem', minHeight: 24, fontWeight: 700 }}
+                >
+                  Recommendation
                 </Button>
               </Card>
             ))}
