@@ -24,8 +24,6 @@ env:
   REGION: ${{ vars.GCP_REGION || 'us-central1' }}
   GAR_LOCATION: ${{ vars.GCP_REGION || 'us-central1' }}
   GAR_REPOSITORY: ${{ vars.GCP_ARTIFACT_REGISTRY_REPOSITORY || 'regulatoryai' }}
-  FRONTEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REGISTRY_REPOSITORY || 'regulatoryai' }}/frontend
-  BACKEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REGISTRY_REPOSITORY || 'regulatoryai' }}/backend
 
 jobs:
   deploy:
@@ -94,19 +92,22 @@ jobs:
       - name: Build and push frontend image
         working-directory: RegulatoryAI
         run: |
-          docker build -f Dockerfile.frontend -t ${{ env.FRONTEND_IMAGE }}:${{ github.sha }} .
-          docker push ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          IMAGE_URI="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/frontend:${{ github.sha }}"
+          docker build -f Dockerfile.frontend -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
 
       - name: Build and push backend image
         working-directory: RegulatoryAI
         run: |
-          docker build -f backend/Dockerfile -t ${{ env.BACKEND_IMAGE }}:${{ github.sha }} ./backend
-          docker push ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          IMAGE_URI="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/backend:${{ github.sha }}"
+          docker build -f backend/Dockerfile -t "$IMAGE_URI" ./backend
+          docker push "$IMAGE_URI"
 
       - name: Deploy frontend to Cloud Run
         run: |
+          IMAGE_URI="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/frontend:${{ github.sha }}"
           gcloud run deploy regulatoryai-frontend \
-            --image=${{ env.FRONTEND_IMAGE }}:${{ github.sha }} \
+            --image="$IMAGE_URI" \
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
@@ -114,8 +115,9 @@ jobs:
 
       - name: Deploy backend to Cloud Run
         run: |
+          IMAGE_URI="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/backend:${{ github.sha }}"
           gcloud run deploy regulatoryai-backend \
-            --image=${{ env.BACKEND_IMAGE }}:${{ github.sha }} \
+            --image="$IMAGE_URI" \
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
