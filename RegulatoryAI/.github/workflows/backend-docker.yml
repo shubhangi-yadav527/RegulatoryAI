@@ -3,16 +3,8 @@ name: backend-docker
 on:
   push:
     branches: [main]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-docker.yml'
-      - 'docker-compose.yml'
   pull_request:
     branches: [main]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-docker.yml'
-      - 'docker-compose.yml'
   workflow_dispatch:
 
 env:
