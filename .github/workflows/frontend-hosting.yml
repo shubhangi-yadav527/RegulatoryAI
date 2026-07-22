@@ -1,0 +1,61 @@
+name: frontend-hosting
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'RegulatoryAI/src/**'
+      - 'RegulatoryAI/public/**'
+      - 'RegulatoryAI/package.json'
+      - 'RegulatoryAI/package-lock.json'
+      - 'RegulatoryAI/Dockerfile.frontend'
+      - '.github/workflows/frontend-hosting.yml'
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  REGION: ${{ vars.GCP_REGION || 'us-central1' }}
+  GAR_LOCATION: ${{ vars.GCP_REGION || 'us-central1' }}
+  FRONTEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/regulatoryai/frontend
+  SERVICE_NAME: ${{ vars.GCP_FRONTEND_SERVICE_NAME || 'regulatoryai-frontend' }}
+  REACT_APP_BACKEND_URL: ${{ vars.REACT_APP_BACKEND_URL || '' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
+
+      - name: Build and push frontend image
+        working-directory: RegulatoryAI
+        run: |
+          docker build -f Dockerfile.frontend -t ${{ env.FRONTEND_IMAGE }}:${{ github.sha }} .
+          docker push ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+
+      - name: Deploy frontend to Cloud Run
+        run: |
+          gcloud run deploy "${{ env.SERVICE_NAME }}" \
+            --image=${{ env.FRONTEND_IMAGE }}:${{ github.sha }} \
+            --region=${{ env.REGION }} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --project=${{ env.PROJECT_ID }} \
+            --set-env-vars REACT_APP_BACKEND_URL="${{ env.REACT_APP_BACKEND_URL }}"

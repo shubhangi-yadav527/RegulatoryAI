@@ -1,0 +1,56 @@
+name: backend-hosting
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'RegulatoryAI/backend/**'
+      - 'RegulatoryAI/docker-compose.yml'
+      - '.github/workflows/backend-hosting.yml'
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  REGION: ${{ vars.GCP_REGION || 'us-central1' }}
+  GAR_LOCATION: ${{ vars.GCP_REGION || 'us-central1' }}
+  BACKEND_IMAGE: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/regulatoryai/backend
+  SERVICE_NAME: ${{ vars.GCP_BACKEND_SERVICE_NAME || 'regulatoryai-backend' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
+
+      - name: Build and push backend image
+        working-directory: RegulatoryAI
+        run: |
+          docker build -f backend/Dockerfile -t ${{ env.BACKEND_IMAGE }}:${{ github.sha }} ./backend
+          docker push ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+
+      - name: Deploy backend to Cloud Run
+        run: |
+          gcloud run deploy "${{ env.SERVICE_NAME }}" \
+            --image=${{ env.BACKEND_IMAGE }}:${{ github.sha }} \
+            --region=${{ env.REGION }} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --project=${{ env.PROJECT_ID }}
